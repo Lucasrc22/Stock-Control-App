@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/estoque': 'http://localhost:8000',
-    },
-  },
+  plugins: [
+    TanStackRouterVite({
+      routesDirectory: './src/pages', // Altere para o diretório correto
+    }),
+    react(),
+  ],
 });
