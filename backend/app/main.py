@@ -1,17 +1,6 @@
 from fastapi import FastAPI
 from app.routers import estoque
 
-from fastapi.middleware.cors import CORSMiddleware
-
-app = FastAPI()
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = FastAPI(title="Controle de Estoque")
 
 app.include_router(estoque.router)
