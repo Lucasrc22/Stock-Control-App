@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routers import estoque
+from app.routers import estoque
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
