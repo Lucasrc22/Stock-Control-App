@@ -10,13 +10,17 @@ export default function ProductList() {
   useEffect(() => {
   fetch('http://localhost:8000/products')
     .then((res) => res.json())
-    .then((data) => setProducts(data.products))
-
+    .then((data) => {
+      setProducts(data);  // Já que o backend retorna uma lista simples, não precisa de data.products
+      setLoading(false);  // <- importante parar o loading aqui!
+    })
     .catch((err) => {
       console.error(err);
       setProducts([]);
+      setLoading(false);  // Também parar o loading em caso de erro
     });
 }, []);
+
 
 
   const handleSave = (updatedProduct: Product) => {
