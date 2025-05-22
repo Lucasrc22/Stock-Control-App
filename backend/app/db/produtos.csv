@@ -1,4 +1,4 @@
-id,nome,estoque_atual,data_entrada,data_saida,destinatario,quantidade
+id,nome,estoque_atual,data_entrada,data_saida,destinatario,quantidade_retirada
 1,CAFE EM PO 250GR MELITA EXTRAFORTE,,,,,
 2,CAFE SOLUVEL MELITA,,,,,
 3,ACUCAR KG (PETRIBU NÃO),,,,,
