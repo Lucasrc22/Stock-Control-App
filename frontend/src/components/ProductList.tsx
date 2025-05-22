@@ -1,51 +1,86 @@
-import { useState } from 'react'
-import EditableProductRow from './EditableProductRow'
-
-type Product = {
-  id: number
-  nome: string
-  estoque_atual?: number
-  data_entrada?: string
-  data_saida?: string
-  destinatario?: string
-  quantidade_retirada?: number
-}
+import { useEffect, useState } from 'react';
+import EditableProductRow from './EditableProductRow';
+import type { Product } from '../types';
 
 export default function ProductList() {
-  const [products, setProducts] = useState<Product[]>([
-    { id: 1, nome: 'Produto A' },
-    { id: 2, nome: 'Produto B' },
-  ])
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  fetch('http://localhost:8000/products')
+    .then((res) => res.json())
+    .then((data) => setProducts(data.products))
+
+    .catch((err) => {
+      console.error(err);
+      setProducts([]);
+    });
+}, []);
+
 
   const handleSave = (updatedProduct: Product) => {
     setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)),
-    )
-  }
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+  };
+
+  const saveAllToBackend = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/products', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(products),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar os produtos');
+      }
+
+      alert('Produtos salvos com sucesso!');
+    } catch (error) {
+      alert('Erro ao salvar: ' + (error as Error).message);
+    }
+  };
+
+  if (loading) return <div>Carregando produtos...</div>;
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Estoque Atual</th>
-          <th>Data Entrada</th>
-          <th>Data Saída</th>
-          <th>Destinatário</th>
-          <th>Quantidade Retirada</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {products.map((product) => (
-          <EditableProductRow
-            key={product.id}
-            product={product}
-            onSave={handleSave}
-          />
-        ))}
-      </tbody>
-    </table>
-  )
+    <div className="p-4">
+      <h2 className="text-xl font-semibold mb-4">Lista de Produtos</h2>
+      <table className="min-w-full table-auto border border-gray-300">
+        <thead className="bg-gray-100">
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Estoque Atual</th>
+            <th>Data Entrada</th>
+            <th>Data Saída</th>
+            <th>Destinatário</th>
+            <th>Quantidade Retirada</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => (
+            <EditableProductRow
+              key={product.id}
+              product={product}
+              onSave={handleSave}
+            />
+          ))}
+        </tbody>
+      </table>
+      <div className="mt-4">
+        <button
+          onClick={saveAllToBackend}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Salvar Tudo
+        </button>
+      </div>
+    </div>
+  );
 }
