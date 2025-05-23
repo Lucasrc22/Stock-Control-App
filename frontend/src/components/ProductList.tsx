@@ -62,10 +62,6 @@ export default function ProductList() {
             <th>ID</th>
             <th>Nome</th>
             <th>Estoque Atual</th>
-            <th>Data Entrada</th>
-            <th>Data Saída</th>
-            <th>Destinatário</th>
-            <th>Quantidade Retirada</th>
             <th>Ação</th>
           </tr>
         </thead>

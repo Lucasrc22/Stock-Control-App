@@ -7,13 +7,20 @@ type Props = {
 };
 
 export default function EditableProductRow({ product, onSave }: Props) {
-  const [formData, setFormData] = useState<Product>(product);
+  const [formData, setFormData] = useState<Product>({
+    ...product,
+    estoque_atual: product.estoque_atual ?? 0,
+
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'quantidade_retirada' || name === 'estoque_atual' ? Number(value) : value,
+      [name]: name === 'quantidade_retirada' || name === 'estoque_atual'
+        ? Number(value)
+        : value,
     }));
   };
 
@@ -22,51 +29,29 @@ export default function EditableProductRow({ product, onSave }: Props) {
   };
 
   return (
-    <tr>
-      <td>{formData.id}</td>
-      <td>{formData.nome}</td>
-      <td>
+    <tr className="border-t">
+      <td className="p-2">{formData.id}</td>
+      <td className="p-2">{formData.nome}</td>
+      <td className="p-2">
         <input
           type="number"
           name="estoque_atual"
-          value={formData.estoque_atual ?? ''}
+          value={formData.estoque_atual}
           onChange={handleChange}
+          className="w-full border px-2 py-1 rounded"
         />
       </td>
-      <td>
-        <input
-          type="date"
-          name="data_entrada"
-          value={formData.data_entrada ?? ''}
-          onChange={handleChange}
-        />
-      </td>
-      <td>
-        <input
-          type="date"
-          name="data_saida"
-          value={formData.data_saida ?? ''}
-          onChange={handleChange}
-        />
-      </td>
-      <td>
-        <input
-          type="text"
-          name="destinatario"
-          value={formData.destinatario ?? ''}
-          onChange={handleChange}
-        />
-      </td>
-      <td>
-        <input
-          type="number"
-          name="quantidade_retirada"
-          value={formData.quantidade_retirada ?? ''}
-          onChange={handleChange}
-        />
-      </td>
-      <td>
-        <button onClick={handleSave}>Salvar</button>
+      
+      
+     
+     
+      <td className="p-2">
+        <button
+          onClick={handleSave}
+          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+        >
+          Salvar
+        </button>
       </td>
     </tr>
   );

@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import csv
-import os
+
 from typing import List
 
 app = FastAPI()
@@ -14,8 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Caminho da pasta "app"
-CSV_PATH = os.path.join(BASE_DIR, "db", "products.csv")
+CSV_PATH = "backend/app/db/products.csv"
+
 
 FIELDNAMES = ['id', 'nome', 'estoque_atual', 'data_entrada', 'data_saida', 'destinatario', 'quantidade_retirada']
 
@@ -23,26 +23,25 @@ class Product(BaseModel):
     id: int
     nome: str
     estoque_atual: int | None = None
-    data_entrada: str | None = None
-    data_saida: str | None = None
-    destinatario: str | None = None
-    quantidade_retirada: int | None = None
-
+  
 @app.get("/products")
 def get_products():
     try:
         with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file)
-            products = [dict(row) for row in reader]
+            products = []
+            for row in reader:
+                product = {
+                    "id": int(row["id"]),
+                    "nome": row["nome"],
+                    "estoque_atual": int(row["estoque_atual"]) if row["estoque_atual"] else None,
 
-            for p in products:
-                p["id"] = int(p["id"])
-                p["estoque_atual"] = int(p["estoque_atual"]) if p["estoque_atual"] else None
-                p["quantidade_retirada"] = int(p["quantidade_retirada"]) if p["quantidade_retirada"] else None
-
+                }
+                products.append(product)
             return products
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.put("/products")
 def update_products(products: List[Product]):
