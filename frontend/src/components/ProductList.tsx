@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import EditableProductRow from './EditableProductRow';
 import type { Product } from '../types';
+
+
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
 

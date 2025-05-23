@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import csv
+import os
 from typing import List
 
 app = FastAPI()
@@ -13,7 +14,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-CSV_PATH = "app/db/products.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Caminho da pasta "app"
+CSV_PATH = os.path.join(BASE_DIR, "db", "products.csv")
+
 FIELDNAMES = ['id', 'nome', 'estoque_atual', 'data_entrada', 'data_saida', 'destinatario', 'quantidade_retirada']
 
 class Product(BaseModel):
@@ -32,7 +35,6 @@ def get_products():
             reader = csv.DictReader(file)
             products = [dict(row) for row in reader]
 
-            # Converta valores numéricos corretamente
             for p in products:
                 p["id"] = int(p["id"])
                 p["estoque_atual"] = int(p["estoque_atual"]) if p["estoque_atual"] else None
