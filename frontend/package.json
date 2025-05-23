@@ -11,11 +11,13 @@
     "@tanstack/react-router": "^1.120.5",
     "@tanstack/react-router-devtools": "^1.120.6",
     "@tanstack/router-vite-plugin": "^1.120.5",
+    "axios": "^1.9.0",
+    "isbot": "^5.1.27",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "isbot": "^5.1.27"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "@types/node": "^20",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.2",
