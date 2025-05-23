@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import EditableProductRow from './EditableProductRow';
 import type { Product } from '../types';
-
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -11,13 +10,14 @@ export default function ProductList() {
   fetch('http://localhost:8000/products')
     .then((res) => res.json())
     .then((data) => {
-      setProducts(data);  // Já que o backend retorna uma lista simples, não precisa de data.products
-      setLoading(false);  // <- importante parar o loading aqui!
+      setProducts(data.products);
+      console.log("Produtos carregados: ", data)  
+      
     })
     .catch((err) => {
       console.error(err);
       setProducts([]);
-      setLoading(false);  // Também parar o loading em caso de erro
+      setLoading(false);  
     });
 }, []);
 

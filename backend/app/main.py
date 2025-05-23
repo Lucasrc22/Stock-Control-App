@@ -25,27 +25,22 @@ class Product(BaseModel):
     destinatario: str | None = None
     quantidade_retirada: int | None = None
 
-@app.get("/products", response_model=List[Product])
+@app.get("/products")
 def get_products():
     try:
-        products = []
-        with open(CSV_PATH, mode="r", encoding="utf-8") as file:
+        with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file)
-            for row in reader:
-                # Convertendo campos numéricos e opcionais
-                products.append(Product(
-                    id=int(row['id']),
-                    nome=row['nome'],
-                    estoque_atual=int(row['estoque_atual']) if row['estoque_atual'] else None,
-                    data_entrada=row['data_entrada'] or None,
-                    data_saida=row['data_saida'] or None,
-                    destinatario=row['destinatario'] or None,
-                    quantidade_retirada=int(row['quantidade_retirada']) if row['quantidade_retirada'] else None,
-                ))
-        return products
+            products = [dict(row) for row in reader]
+
+            # Converta valores numéricos corretamente
+            for p in products:
+                p["id"] = int(p["id"])
+                p["estoque_atual"] = int(p["estoque_atual"]) if p["estoque_atual"] else None
+                p["quantidade_retirada"] = int(p["quantidade_retirada"]) if p["quantidade_retirada"] else None
+
+            return products
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.put("/products")
 def update_products(products: List[Product]):
