@@ -44,7 +44,7 @@ def get_products():
                 products.append(product)
             return products
     except Exception as e:
-        print("Erro ao ler CSV:", e)  # <<< Adicione isso
+        print("Erro ao ler CSV:", e) 
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -59,3 +59,20 @@ def update_products(products: List[Product]):
         return {"message": "Produtos atualizados com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/products")
+def add_product(product: Product):
+    try:
+        with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if int(row["id"]) == product.id:
+                    raise HTTPException(status_code=400, detail="Produto com este ID já existe.")
+
+        with open(CSV_PATH, mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=FIELDNAMES)
+            writer.writerow(product.dict())
+        return {"message": "Produto adicionado com sucesso!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+        
