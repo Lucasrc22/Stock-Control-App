@@ -1,5 +1,5 @@
 id,nome,estoque_atual,data_entrada
-1,CAFE EM PO 250GR MELITA EXTRAFORTE,19,
+1,CAFE EM PO 250GR MELITA EXTRAFORTE,20,
 2,CAFE SOLUVEL MELITA,6,
 3,ACUCAR KG (PETRIBU NÃO),3,
 4,ADOÇANTE,3,
@@ -44,4 +44,3 @@ id,nome,estoque_atual,data_entrada
 43,PANO DE CHÃO,10,
 44,ALCOOL 70%,10,
 45,Resmas A4,12,
-
