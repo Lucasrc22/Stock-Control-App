@@ -14,10 +14,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-CSV_PATH = "backend/app/db/products.csv"
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "db", "products.csv")
 
 
-FIELDNAMES = ['id', 'nome', 'estoque_atual', 'data_entrada', 'data_saida', 'destinatario', 'quantidade_retirada']
+
+FIELDNAMES = ['id', 'nome', 'estoque_atual', 'data_entrada']
 
 class Product(BaseModel):
     id: int
@@ -35,11 +39,11 @@ def get_products():
                     "id": int(row["id"]),
                     "nome": row["nome"],
                     "estoque_atual": int(row["estoque_atual"]) if row["estoque_atual"] else None,
-
                 }
                 products.append(product)
             return products
     except Exception as e:
+        print("Erro ao ler CSV:", e)  # <<< Adicione isso
         raise HTTPException(status_code=500, detail=str(e))
 
 
