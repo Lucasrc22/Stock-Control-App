@@ -9,19 +9,31 @@ interface Product {
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
-  const [newProduct, setNewProduct] = useState({ id: 0, nome: '', estoque_atual: 0 })
+  const [newProduct, setNewProduct] = useState({ id: 1, nome: '', estoque_atual: 0 })
 
+  // Carrega os produtos ao iniciar
   useEffect(() => {
     axios.get('http://localhost:8000/products')
-      .then(res => setProducts(res.data))
+      .then(res => {
+        setProducts(res.data)
+
+        // Gera novo ID automaticamente (maior ID + 1)
+        const maxId = res.data.reduce((max: number, p: Product) => p.id > max ? p.id : max, 0)
+        setNewProduct(prev => ({ ...prev, id: maxId + 1 }))
+      })
       .catch(err => console.error(err))
   }, [])
 
+  // Adiciona o produto e já gera um novo ID
   const handleAddProduct = () => {
     axios.post('http://localhost:8000/products', newProduct)
       .then(() => {
-        setProducts(prev => [...prev, newProduct])
-        setNewProduct({ id: 0, nome: '', estoque_atual: 0 })
+        const updatedProducts = [...products, newProduct]
+        setProducts(updatedProducts)
+
+        // Novo ID: maior ID da nova lista + 1
+        const maxId = updatedProducts.reduce((max, p) => p.id > max ? p.id : max, 0)
+        setNewProduct({ id: maxId + 1, nome: '', estoque_atual: 0 })
       })
       .catch(err => console.error(err))
   }
@@ -45,12 +57,8 @@ export default function Home() {
       </table>
 
       <h2>Adicionar Produto</h2>
-      <input
-        type="number"
-        placeholder="ID"
-        value={newProduct.id}
-        onChange={e => setNewProduct({ ...newProduct, id: Number(e.target.value) })}
-      />
+      {/* O ID agora está desabilitado, pois é gerado automaticamente */}
+      <input type="number" value={newProduct.id} disabled />
       <input
         type="text"
         placeholder="Nome"
