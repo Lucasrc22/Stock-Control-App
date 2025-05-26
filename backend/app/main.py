@@ -63,6 +63,7 @@ def update_products(products: List[Product]):
 @app.post("/products")
 def add_product(product: Product):
     try:
+      
         with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file)
             for row in reader:
@@ -75,4 +76,3 @@ def add_product(product: Product):
         return {"message": "Produto adicionado com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        
