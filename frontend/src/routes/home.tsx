@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Lista de Produtos</h1>
+      <h1>Stock Control</h1>
       <table border={1} cellPadding={6}>
         <thead>
           <tr>
