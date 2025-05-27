@@ -4,8 +4,17 @@ from sqlalchemy.orm import Session
 from typing import List
 from .db.database import SessionLocal, ProductDB
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], # URL do seu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Modelo Pydantic
 class Product(BaseModel):
