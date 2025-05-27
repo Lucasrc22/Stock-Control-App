@@ -1,75 +1,118 @@
-import { Product } from '../types';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import type { Product } from '../types';
 
-export default function EditableProductRow({ product, onSave }: { product: Product, onSave: () => void }) {
-  const [estoqueAtual, setEstoqueAtual] = useState(product.estoque_atual ?? 0);
-  const [andar4, setAndar4] = useState(product.estoque_4andar ?? 0);
-  const [andar5, setAndar5] = useState(product.estoque_5andar ?? 0);
+type Props = {
+  product: Product;
+  onSave: (product: Product) => void;
+};
 
-  const handleInputChange = (field: string, value: number) => {
-    if (field === 'estoque_atual') setEstoqueAtual(value);
-    if (field === 'estoque_4andar') setAndar4(value);
-    if (field === 'estoque_5andar') setAndar5(value);
+export default function EditableProductRow({ product, onSave }: Props) {
+  const [formData, setFormData] = useState<Product>({
+    ...product,
+    retirada: 0,
+    destino: '',
+  });
+
+  const [retiradaInfo, setRetiradaInfo] = useState<{ quantidade: number; destino: string } | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'retirada' ? Number(value) : value,
+    }));
   };
 
-  const handleRetirada = async (quantidade: number, andar: string) => {
+  const aplicarRetirada = async () => {
+    if (!formData.retirada || !formData.destino) {
+      alert('Informe a quantidade e o destino.');
+      return;
+    }
+
+    if (formData.retirada > (formData.estoque_atual ?? 0)) {
+      alert('Estoque insuficiente.');
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:8000/products/retirada', {
+      await axios.post('http://localhost:8000/products/retirada', {
         id: product.id,
-        quantidade,
-        andar
+        quantidade: formData.retirada,
+        andar: formData.destino,
       });
 
-      const updatedProduct: Product = response.data;
-      setEstoqueAtual(Number(updatedProduct.estoque_atual));
-      setAndar4(Number(updatedProduct.estoque_4andar));
-      setAndar5(Number(updatedProduct.estoque_5andar));
-      onSave();
-    } catch (error: any) {
-      alert('Erro ao registrar retirada: ' + error.response?.data?.detail || error.message);
+      // Atualiza o estoque localmente conforme o retorno ou simples fetch
+      const updatedProduct = { ...formData };
+      updatedProduct.estoque_atual = (updatedProduct.estoque_atual ?? 0) - formData.retirada;
+
+      // Atualiza o estoque por andar
+      if (formData.destino === '4º andar') {
+        updatedProduct.estoque_4andar = (updatedProduct.estoque_4andar ?? 0) + formData.retirada;
+      } else if (formData.destino === '5º andar') {
+        updatedProduct.estoque_5andar = (updatedProduct.estoque_5andar ?? 0) + formData.retirada;
+      }
+
+      setFormData({
+        ...updatedProduct,
+        retirada: 0,
+        destino: '',
+      });
+
+      setRetiradaInfo({ quantidade: formData.retirada, destino: formData.destino });
+
+      onSave(updatedProduct);
+
+    } catch (error) {
+      alert('Erro ao registrar retirada.');
     }
   };
 
   return (
-    <tr>
-      <td className="border px-2 py-1">{product.id}</td>
-      <td className="border px-2 py-1">{product.nome}</td>
-      <td className="border px-2 py-1">
+    <tr className="border-t">
+      <td className="p-2">{formData.id}</td>
+      <td className="p-2">{formData.nome}</td>
+      <td className="p-2">{formData.estoque_atual}</td>
+      <td className="p-2">{formData.estoque_4andar ?? 0}</td>
+      <td className="p-2">{formData.estoque_5andar ?? 0}</td>
+      <td className="p-2">
         <input
           type="number"
-          value={estoqueAtual}
-          onChange={(e) => handleInputChange('estoque_atual', parseInt(e.target.value))}
-          className="w-20 border px-1"
+          name="retirada"
+          value={formData.retirada ?? ''}
+          onChange={handleChange}
+          min={0}
+          className="w-full border px-2 py-1 rounded"
+          placeholder="Qtd a retirar"
         />
       </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={andar4}
-          onChange={(e) => handleInputChange('estoque_4andar', parseInt(e.target.value))}
-          className="w-20 border px-1"
-        />
+      <td className="p-2">
+        <select
+          name="destino"
+          value={formData.destino ?? ''}
+          onChange={handleChange}
+          className="w-full border px-2 py-1 rounded"
+        >
+          <option value="" disabled>Selecionar Andar</option>
+          <option value="4º andar">4º andar</option>
+          <option value="5º andar">5º andar</option>
+        </select>
       </td>
-      <td className="border px-2 py-1">
-        <input
-          type="number"
-          value={andar5}
-          onChange={(e) => handleInputChange('estoque_5andar', parseInt(e.target.value))}
-          className="w-20 border px-1"
-        />
-      </td>
-      <td className="border px-2 py-1">
+      <td className="p-2 space-x-2">
         <button
-          className="bg-blue-500 text-white px-2 py-1 mr-1"
-          onClick={() => handleRetirada(1, '4')}
-        >+ 4º</button>
-        <button
-          className="bg-green-500 text-white px-2 py-1"
-          onClick={() => handleRetirada(1, '5')}
-        >+ 5º</button>
+          onClick={aplicarRetirada}
+          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+        >
+          Aplicar
+        </button>
       </td>
-      <td className="border px-2 py-1">Atualizado</td>
+      <td className="p-2 text-green-700 font-semibold">
+        {retiradaInfo && (
+          <div>
+            Retirado: {retiradaInfo.quantidade} para {retiradaInfo.destino}
+          </div>
+        )}
+      </td>
     </tr>
   );
 }
