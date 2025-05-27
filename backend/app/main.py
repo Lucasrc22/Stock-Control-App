@@ -1,28 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+# backend/main.py
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
 from typing import List
-import csv
-import os
+from .db.database import SessionLocal, ProductDB
+from pydantic import BaseModel
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:5173"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-CSV_FILE_PATH = "./app/db/products.csv"
-
+# Modelo Pydantic
 class Product(BaseModel):
     id: int
     nome: str
@@ -30,78 +15,60 @@ class Product(BaseModel):
     estoque_4andar: int
     estoque_5andar: int
 
-products: List[Product] = []
+    class Config:
+        orm_mode = True
 
+# Dependência para obter a sessão do banco
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-def load_products():
-    global products
-    if not os.path.exists(CSV_FILE_PATH):
-        products = []
-        return
-    with open(CSV_FILE_PATH, mode='r', newline='', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        products = [Product(
-            id=int(row['id']),
-            nome=row['nome'],
-            estoque_atual=int(row['estoque_atual']),
-            estoque_4andar=int(row.get('estoque_4andar', 0)),
-            estoque_5andar=int(row.get('estoque_5andar', 0))
-        ) for row in reader]
+@app.post("/products", response_model=Product)
+async def create_product(product: Product, db: Session = Depends(get_db)):
+    db_product = ProductDB(**product.dict())
+    db.add(db_product)
+    db.commit()
+    db.refresh(db_product)
+    return db_product
 
+@app.get("/products", response_model=List[Product])
+async def get_products(db: Session = Depends(get_db)):
+    return db.query(ProductDB).all()
 
-def save_products():
-    with open(CSV_FILE_PATH, mode='w', newline='', encoding='utf-8') as file:
-        fieldnames = ['id', 'nome', 'estoque_atual', 'estoque_4andar', 'estoque_5andar']
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        for p in products:
-            writer.writerow(p.dict())
+@app.put("/products", response_model=List[Product])
+async def update_products(products: List[Product], db: Session = Depends(get_db)):
+    updated_products = []
+    for product in products:
+        db_product = db.query(ProductDB).filter(ProductDB.id == product.id).first()
+        if db_product:
+            for key, value in product.dict().items():
+                setattr(db_product, key, value)
+            db.commit()
+            db.refresh(db_product)
+            updated_products.append(db_product)
+    return updated_products
 
-
-@app.get("/products")
-def get_products():
-    load_products()
-    return products
-
-
-@app.put("/products")
-def update_products(updated: List[Product]):
-    global products
-    products = updated
-    save_products()
-    return {"message": "Produtos atualizados."}
-
-
-class RetiradaRequest(BaseModel):
-    id: int
-    quantidade: int
-    andar: str
-
-@app.get("/products/retiradas", response_model=List[dict])
-async def get_retiradas():
-    products = load_products()
-    return [{
-        "id": p.id,
-        "nome": p.nome,
-        "estoque_4andar": p.estoque_4andar,  
-        "estoque_5andar": p.estoque_5andar   
-    } for p in products]
-
-
-@app.post("/products/retirada")
-def retirada_produto(req: RetiradaRequest):
-    load_products()
-    for p in products:
-        if p.id == req.id:
-            if p.estoque_atual < req.quantidade:
-                raise HTTPException(status_code=400, detail="Estoque insuficiente.")
-            p.estoque_atual -= req.quantidade
-            if req.andar == '4':
-                p.estoque_4andar += req.quantidade
-            elif req.andar == '5':
-                p.estoque_5andar += req.quantidade
-            else:
-                raise HTTPException(status_code=400, detail="Andar inválido.")
-            save_products()
-            return {"message": f"Retirada registrada no {req.andar}º andar."}
-    raise HTTPException(status_code=404, detail="Produto não encontrado.")
+@app.post("/products/retirada", response_model=Product)
+async def registrar_retirada(request: dict, db: Session = Depends(get_db)):
+    product = db.query(ProductDB).filter(ProductDB.id == request["id"]).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    if product.estoque_atual < request["quantidade"]:
+        raise HTTPException(status_code=400, detail="Estoque insuficiente")
+    
+    product.estoque_atual -= request["quantidade"]
+    
+    if request["andar"] == "4º andar":
+        product.estoque_4andar += request["quantidade"]
+    elif request["andar"] == "5º andar":
+        product.estoque_5andar += request["quantidade"]
+    else:
+        raise HTTPException(status_code=400, detail="Andar inválido")
+    
+    db.commit()
+    db.refresh(product)
+    return product
