@@ -77,6 +77,16 @@ class RetiradaRequest(BaseModel):
     quantidade: int
     andar: str
 
+@app.get("/products/retiradas", response_model=List[dict])
+async def get_retiradas():
+    products = load_products()
+    return [{
+        "id": p.id,
+        "nome": p.nome,
+        "estoque_4andar": p.estoque_4andar,  
+        "estoque_5andar": p.estoque_5andar   
+    } for p in products]
+
 
 @app.post("/products/retirada")
 def retirada_produto(req: RetiradaRequest):

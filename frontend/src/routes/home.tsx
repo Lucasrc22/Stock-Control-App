@@ -25,22 +25,17 @@ export default function Home() {
       .catch(err => console.error(err))
   }, [])
 
-  const handleAddProduct = () => {
-    if (!newProduct.nome.trim()) {
-      alert("Nome do produto é obrigatório.")
-      return
-    }
-
-    axios.post('http://localhost:8000/products', newProduct)
-      .then(() => {
-        const updated = [...products, newProduct]
-        setProducts(updated)
-
-        const nextId = updated.reduce((max, p) => p.id > max ? p.id : max, 0) + 1
-        setNewProduct({ id: nextId, nome: '', estoque_atual: 0 })
-      })
-      .catch(err => console.error(err))
+  const handleAddProduct = async () => {
+  try {
+    const response = await axios.post('http://localhost:8000/products', {
+      nome: newProduct.nome,
+      estoque_atual: newProduct.estoque_atual
+    });
+    setProducts([...products, response.data]);
+  } catch (error) {
+    console.error("Erro ao adicionar produto:", error);
   }
+}
 
   const handleEstoqueChange = (id: number, value: number) => {
     const updated = products.map(p =>
