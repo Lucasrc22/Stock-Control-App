@@ -1,88 +1,54 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Product } from '../types';
 import EditableProductRow from './EditableProductRow';
-import type { Product } from '../types';
 
-
-export default function ProductList() {
+export default function ProductTable() {
   const [products, setProducts] = useState<Product[]>([]);
-
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-  fetch('http://localhost:8000/products')
-    .then((res) => res.json())
-    .then((data) => {
-      setProducts(data.products);
-      console.log("Produtos carregados: ", data)  
-      
-    })
-    .catch((err) => {
-      console.error(err);
-      setProducts([]);
-      setLoading(false);  
-    });
-}, []);
-
-
-
-  const handleSave = (updatedProduct: Product) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-  };
-
-  const saveAllToBackend = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/products', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(products),
+  const fetchProducts = () => {
+    axios.get('http://localhost:8000/products')
+      .then(response => {
+        setProducts(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar produtos:', error);
+        setLoading(false);
       });
-
-      if (!response.ok) {
-        throw new Error('Erro ao salvar os produtos');
-      }
-
-      alert('Produtos salvos com sucesso!');
-    } catch (error) {
-      alert('Erro ao salvar: ' + (error as Error).message);
-    }
   };
 
-  if (loading) return <div>Carregando produtos...</div>;
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (loading) return <div>Carregando...</div>;
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Lista de Produtos</h2>
-      <table className="min-w-full table-auto border border-gray-300">
-        <thead className="bg-gray-100">
+      <h2 className="text-xl font-bold mb-4">Controle de Estoque</h2>
+      <table className="w-full table-auto border">
+        <thead>
           <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Estoque Atual</th>
-            <th>Ação</th>
+            <th className="border px-2 py-1">ID</th>
+            <th className="border px-2 py-1">Nome</th>
+            <th className="border px-2 py-1">Estoque Atual</th>
+            <th className="border px-2 py-1">4º Andar</th>
+            <th className="border px-2 py-1">5º Andar</th>
+            <th className="border px-2 py-1">Retirada</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {products.map(product => (
             <EditableProductRow
               key={product.id}
               product={product}
-              onSave={handleSave}
+              onSave={fetchProducts}
             />
           ))}
         </tbody>
       </table>
-      <div className="mt-4">
-        <button
-          onClick={saveAllToBackend}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Salvar Tudo
-        </button>
-      </div>
     </div>
   );
 }

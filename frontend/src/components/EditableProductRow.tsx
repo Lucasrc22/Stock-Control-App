@@ -1,104 +1,67 @@
+import { Product } from '../types';
+import axios from 'axios';
 import { useState } from 'react';
-import type { Product } from '../types';
 
 type Props = {
   product: Product;
-  onSave: (product: Product) => void;
+  onSave: () => void;
 };
+
 export default function EditableProductRow({ product, onSave }: Props) {
-  const [formData, setFormData] = useState<Product>({
-    ...product,
-    estoque_atual: product.estoque_atual ?? 0,
-    retirada: 0,
-    destino: '',
-  });
+  const [estoqueAtual, setEstoqueAtual] = useState(product.estoque_atual ?? 0);
+  const [andar4, setAndar4] = useState(product.estoque_4andar ?? 0);
+  const [andar5, setAndar5] = useState(product.estoque_5andar ?? 0);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'estoque_atual' || name === 'retirada' ? Number(value) : value
-    }));
-  };
-
-  const aplicarRetirada = () => {
-    if (!formData.retirada || !formData.destino) {
-      alert("Informe a quantidade e o destino.");
-      return;
+  const handleRetirada = async (quantidade: number, andar: string) => {
+    try {
+      await axios.post('http://localhost:8000/products/retirada', {
+        id: product.id,
+        quantidade,
+        andar
+      });
+      onSave(); // Atualiza produtos no componente pai
+    } catch (error: any) {
+      alert('Erro ao registrar retirada: ' + error.response?.data?.detail || error.message);
     }
-
-    if (formData.retirada > (formData.estoque_atual ?? 0)) {
-      alert("Estoque insuficiente.");
-      return;
-    }
-
-    const novoEstoque = (formData.estoque_atual ?? 0) - formData.retirada;
-
-
-
-    setFormData(prev => ({
-      ...prev,
-      estoque_atual: novoEstoque,
-      retirada: 0,
-      destino: ''
-    }));
-
-    onSave({
-      ...formData,
-      estoque_atual: novoEstoque,
-      retirada: 0,
-      destino: ''
-    });
   };
 
   return (
-    <tr className="border-t">
-      <td className="p-2">{formData.id}</td>
-      <td className="p-2">{formData.nome}</td>
-      <td className="p-2">
+    <tr>
+      <td className="border px-2 py-1">{product.id}</td>
+      <td className="border px-2 py-1">{product.nome}</td>
+      <td className="border px-2 py-1">
         <input
           type="number"
-          name="estoque_atual"
-          value={formData.estoque_atual}
-          onChange={handleChange}
-          className="w-full border px-2 py-1 rounded"
+          value={estoqueAtual}
+          onChange={e => setEstoqueAtual(Number(e.target.value))}
+          className="w-20 border px-1"
         />
       </td>
-      <td className="p-2">
+      <td className="border px-2 py-1">
         <input
           type="number"
-          name="retirada"
-          value={formData.retirada ?? ''}
-          onChange={handleChange}
-          placeholder="Qtd a retirar"
-          className="w-full border px-2 py-1 rounded"
+          value={andar4}
+          onChange={e => setAndar4(Number(e.target.value))}
+          className="w-20 border px-1"
         />
       </td>
-      <td className="p-2">
-        <select
-          name="destino"
-          value={formData.destino ?? ''}
-          onChange={handleChange}
-          className="w-full border px-2 py-1 rounded"
-        >
-          <option value="" disabled>Selecionar Andar</option>
-          <option value="4º andar">4º andar</option>
-          <option value="5º andar">5º andar</option>
-        </select>
+      <td className="border px-2 py-1">
+        <input
+          type="number"
+          value={andar5}
+          onChange={e => setAndar5(Number(e.target.value))}
+          className="w-20 border px-1"
+        />
       </td>
-      <td className="p-2 space-x-2">
+      <td className="border px-2 py-1">
         <button
-          onClick={aplicarRetirada}
-          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-        >
-          Aplicar
-        </button>
+          className="bg-blue-500 text-white px-2 py-1 mr-1"
+          onClick={() => handleRetirada(1, '4')}
+        >+ 4º</button>
         <button
-          onClick={() => onSave(formData)}
-          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-        >
-          Salvar
-        </button>
+          className="bg-green-500 text-white px-2 py-1"
+          onClick={() => handleRetirada(1, '5')}
+        >+ 5º</button>
       </td>
     </tr>
   );
