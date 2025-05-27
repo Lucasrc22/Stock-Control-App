@@ -1,11 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // URL do seu backend
+  baseURL: 'http://localhost:8000', 
 });
 
 export const productService = {
-  // Obter todos os produtos
   getAll: async () => {
     try {
       const response = await api.get('/products');
@@ -16,11 +15,11 @@ export const productService = {
     }
   },
 
-  // Registrar uma retirada
   registerWithdrawal: async (data: {
     id: number;
     quantidade: number;
     andar: string;
+    
   }) => {
     try {
       const response = await api.post('/products/retirada', data);
@@ -31,7 +30,6 @@ export const productService = {
     }
   },
 
-  // Atualizar produtos em lote
   updateProducts: async (products: any[]) => {
     try {
       const response = await api.put('/products', products);

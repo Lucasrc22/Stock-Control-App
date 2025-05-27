@@ -1,36 +1,24 @@
 import { useState } from 'react';
-import axios from 'axios';
-import type { Product } from '../types';
+import { productService } from '../services/api';
+import { Product } from '../types';
 
 type Props = {
   product: Product;
   estoque_4andar: number;
   estoque_5andar: number;
-  onSave: (updatedProduct: Product) => void;
-};
-
-// Tipo explícito para o estado do formulário
-type FormData = Product & {
-  retirada: number;
-  destino: string;
-  estoque_4andar: number; // Garantindo que não será undefined
-  estoque_5andar: number; // Garantindo que não será undefined
+  onSave: () => void;
 };
 
 export default function EditableProductRow({ product, estoque_4andar, estoque_5andar, onSave }: Props) {
-  // Estado inicial garantindo todos os valores numéricos
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     ...product,
-    estoque_4andar: product.estoque_4andar ?? 0,
-    estoque_5andar: product.estoque_5andar ?? 0,
+    estoque_4andar,
+    estoque_5andar,
     retirada: 0,
     destino: '',
   });
 
-  const [retiradaInfo, setRetiradaInfo] = useState<{
-    quantidade: number;
-    destino: string;
-  } | null>(null);
+  const [retiradaInfo, setRetiradaInfo] = useState<{ quantidade: number; destino: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -52,16 +40,14 @@ export default function EditableProductRow({ product, estoque_4andar, estoque_5a
     }
 
     try {
-      await axios.post('http://localhost:8000/products/retirada', {
+      await productService.registerWithdrawal({
         id: formData.id,
         quantidade: formData.retirada,
         andar: formData.destino,
       });
 
-      // Criando o produto atualizado com tipos explícitos
-      const updatedProduct: FormData = {
-        id: formData.id,
-        nome: formData.nome,
+      setFormData({
+        ...formData,
         estoque_atual: formData.estoque_atual - formData.retirada,
         estoque_4andar: formData.destino === '4º andar' 
           ? formData.estoque_4andar + formData.retirada 
@@ -71,28 +57,19 @@ export default function EditableProductRow({ product, estoque_4andar, estoque_5a
           : formData.estoque_5andar,
         retirada: 0,
         destino: '',
-      };
+      });
 
-      setFormData(updatedProduct);
       setRetiradaInfo({
         quantidade: formData.retirada,
         destino: formData.destino,
       });
 
-      onSave({
-        id: updatedProduct.id,
-        nome: updatedProduct.nome,
-        estoque_atual: updatedProduct.estoque_atual,
-        estoque_4andar: updatedProduct.estoque_4andar,
-        estoque_5andar: updatedProduct.estoque_5andar,
-      });
-
+      onSave();
     } catch (error) {
       console.error('Erro ao registrar retirada:', error);
       alert('Erro ao registrar retirada.');
     }
   };
-
 
   return (
     <tr className="border-t">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Product } from '../types';
+import { productService } from '../services/api';
 import EditableProductRow from './EditableProductRow';
+import { Product } from '../types';
 
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -9,17 +9,10 @@ export default function ProductList() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get<Product[]>('http://localhost:8000/products');
-      // Garante que todos os produtos tenham valores numéricos para os estoques
-      const validatedProducts = response.data.map(product => ({
-        ...product,
-        estoque_atual: product.estoque_atual ?? 0,
-        estoque_4andar: product.estoque_4andar ?? 0,
-        estoque_5andar: product.estoque_5andar ?? 0
-      }));
-      setProducts(validatedProducts);
+      const data = await productService.getAll();
+      setProducts(data);
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
