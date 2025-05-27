@@ -27,7 +27,7 @@ export default function ProductTable() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Controle de Estoque</h2>
+      <h2 className="text-xl font-bold mb-4">Stock Control</h2>
       <table className="w-full table-auto border">
         <thead>
           <tr>
