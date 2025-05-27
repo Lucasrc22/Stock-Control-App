@@ -34,7 +34,7 @@ export default function EditableProductRow({ product, onSave }: Props) {
 
     const novoEstoque = (formData.estoque_atual ?? 0) - formData.retirada;
 
-    alert(`Produto destinado ao ${formData.destino}`);
+
 
     setFormData(prev => ({
       ...prev,

@@ -1,33 +1,31 @@
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import csv
 from typing import List
-from datetime import datetime
+import os
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], 
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-import os
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(BASE_DIR, "db", "products.csv")
 
-
-
-FIELDNAMES = ['id', 'nome', 'estoque_atual', 'data_entrada']
+FIELDNAMES = ['id', 'nome', 'estoque_atual', 'estoque_4andar', 'estoque_5andar']
 
 class Product(BaseModel):
     id: int
     nome: str
     estoque_atual: int | None = None
+    estoque_4andar: int | None = None
+    estoque_5andar: int | None = None
 
 class Retirada(BaseModel):
     id: int
@@ -48,6 +46,14 @@ def retirar_produto(data: Retirada):
                     if estoque_atual < data.quantidade:
                         raise HTTPException(status_code=400, detail="Estoque insuficiente.")
                     row["estoque_atual"] = str(estoque_atual - data.quantidade)
+
+                    if data.andar == "4":
+                        row["estoque_4andar"] = str(int(row.get("estoque_4andar", 0)) + data.quantidade)
+                    elif data.andar == "5":
+                        row["estoque_5andar"] = str(int(row.get("estoque_5andar", 0)) + data.quantidade)
+                    else:
+                        raise HTTPException(status_code=400, detail="Andar inválido.")
+                    
                     found = True
                 produtos.append(row)
 
@@ -59,8 +65,7 @@ def retirar_produto(data: Retirada):
             writer.writeheader()
             writer.writerows(produtos)
 
-        return {"message": f"Produto ID {data.id} retirado com sucesso para o {data.andar_destino}º andar."}
-    
+        return {"message": f"Produto ID {data.id} retirado com sucesso para o {data.andar}º andar."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -74,14 +79,14 @@ def get_products():
                 product = {
                     "id": int(row["id"]),
                     "nome": row["nome"],
-                    "estoque_atual": int(row["estoque_atual"]) if row["estoque_atual"] else None,
+                    "estoque_atual": int(row["estoque_atual"]) if row["estoque_atual"] else 0,
+                    "estoque_4andar": int(row["estoque_4andar"]) if row.get("estoque_4andar") else 0,
+                    "estoque_5andar": int(row["estoque_5andar"]) if row.get("estoque_5andar") else 0,
                 }
                 products.append(product)
             return products
     except Exception as e:
-        print("Erro ao ler CSV:", e) 
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.put("/products")
 def update_products(products: List[Product]):
@@ -98,7 +103,6 @@ def update_products(products: List[Product]):
 @app.post("/products")
 def add_product(product: Product):
     try:
-      
         with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
             reader = csv.DictReader(file)
             for row in reader:
