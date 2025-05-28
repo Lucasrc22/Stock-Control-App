@@ -12,9 +12,9 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "~/*": ["./src/*"]
+      "@/*": ["src/*"]
     },
     "rootDirs": [".", "./.react-router/types"],
     "resolveJsonModule": true,

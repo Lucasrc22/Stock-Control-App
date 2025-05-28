@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Product } from '../types';
 import EditableProductRow from './EditableProductRow';
 
+
+
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,16 +64,21 @@ export default function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {products.map(product => (
-              <EditableProductRow
-                key={product.id}
-                product={product}
-                estoque_4andar={product.estoque_4andar ?? 0}
-                estoque_5andar={product.estoque_5andar ?? 0}
-                onSave={fetchProducts}
-              />
-            ))}
-          </tbody>
+  {products.map(product => (
+    
+    <EditableProductRow
+      key={product.id}
+      product={product}
+      onChange={(updatedProduct) => {
+        setProducts(prev =>
+          prev.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
+        )
+      }}
+      onSave={fetchProducts}
+    />
+  ))}
+</tbody>
+
         </table>
       </div>
     </div>
