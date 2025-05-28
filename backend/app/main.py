@@ -2,7 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
-from app.database import SessionLocal
+from app.db.database import SessionLocal, Base, engine
+from app.db.models import ProductDB  
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
