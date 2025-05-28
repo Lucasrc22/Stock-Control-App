@@ -6,10 +6,11 @@ import threading
 
 router = APIRouter()
 
-CSV_FILE = "products.csv"
+CSV_FILE = "data\products.csv"
 lock = threading.Lock()
 
 class ProductCreate(BaseModel):
+    id : int
     nome: str
     estoque_atual: int
     estoque_4andar: int = 0
@@ -17,6 +18,7 @@ class ProductCreate(BaseModel):
 
 class ProductResponse(ProductCreate):
     id: int
+
 
 def read_products_from_csv() -> List[ProductResponse]:
     products = []
@@ -44,7 +46,6 @@ def write_products_to_csv(products: List[ProductResponse]):
 @router.post("/products/", response_model=ProductResponse)
 def create_product(product: ProductCreate):
     products = read_products_from_csv()
-    # gera novo ID incremental
     new_id = max([p.id for p in products], default=0) + 1
     new_product = ProductResponse(id=new_id, **product.dict())
     products.append(new_product)
@@ -54,3 +55,25 @@ def create_product(product: ProductCreate):
 @router.get("/products/", response_model=List[ProductResponse])
 def list_products():
     return read_products_from_csv()
+
+@router.post("/products/retirada")
+def register_withdrawal(id: int, quantidade: int, andar: str):
+    products = read_products_from_csv()
+    product = next((p for p in products if p.id == id), None)
+    if not product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    if product.estoque_atual < quantidade:
+        raise HTTPException(status_code=400, detail="Estoque insuficiente")
+    
+    product.estoque_atual -= quantidade
+    
+    if andar == "4º andar":
+        product.estoque_4andar += quantidade
+    elif andar == "5º andar":
+        product.estoque_5andar += quantidade
+    else:
+        raise HTTPException(status_code=400, detail="Andar inválido. Use '4º andar' ou '5º andar'")
+    
+    write_products_to_csv(products)
+    return {"message": "Retirada registrada com sucesso"}

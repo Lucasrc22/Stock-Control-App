@@ -7,6 +7,5 @@ class Product(BaseModel):
     estoque_atual: Optional[int] = None
     estoque_4andar: Optional[int] = None
     estoque_5andar: Optional[int] = None
-    retirada: Optional[int] = None
-    destino: str
+   
 
