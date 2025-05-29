@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Product } from '../types';
 import EditableProductRow from './EditableProductRow';
 
-
-
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,10 +35,20 @@ export default function ProductList() {
 
   if (error) {
     return (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <div
+        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+        role="alert"
+      >
         <strong className="font-bold">Erro! </strong>
         <span className="block sm:inline">{error}</span>
       </div>
+    );
+  }
+
+  // Atualiza localmente o produto modificado, sem refazer fetch
+  function handleProductChange(updatedProduct: Product) {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
   }
 
@@ -57,28 +65,18 @@ export default function ProductList() {
               <th className="py-2 px-4 border">Estoque Atual</th>
               <th className="py-2 px-4 border">4º Andar</th>
               <th className="py-2 px-4 border">5º Andar</th>
-              <th className="py-2 px-4 border">Retirar</th>
-              <th className="py-2 px-4 border">Destino</th>
-              <th className="py-2 px-4 border">Ações</th>
-              <th className="py-2 px-4 border">Status</th>
+              <th className="py-2 px-4 border">Status</th> {/* para o indicador "salvando" */}
             </tr>
           </thead>
           <tbody>
-  {products.map(product => (
-    
-    <EditableProductRow
-      key={product.id}
-      product={product}
-      onChange={(updatedProduct) => {
-        setProducts(prev =>
-          prev.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
-        )
-      }}
-      onSave={fetchProducts}
-    />
-  ))}
-</tbody>
-
+            {products.map((product) => (
+              <EditableProductRow
+                key={product.id}
+                product={product}
+                onChange={handleProductChange}
+              />
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 from pydantic import BaseModel
 from typing import List
 import csv
@@ -55,6 +55,25 @@ def create_product(product: ProductCreate):
 @router.get("/products/", response_model=List[ProductResponse])
 def list_products():
     return read_products_from_csv()
+@router.put("/products/{product_id}", response_model=ProductResponse)
+def update_product(
+    product_id: int = Path(..., gt=0),
+    updated_product: ProductCreate = None
+):
+    products = read_products_from_csv()
+    
+    index = next((i for i, p in enumerate(products) if p.id == product_id), None)
+    if index is None:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    updated_data = updated_product.dict()
+    updated_data["id"] = product_id 
+    
+    products[index] = ProductResponse(**updated_data)
+    
+    write_products_to_csv(products)
+    return products[index]
+
 
 @router.post("/products/retirada")
 def register_withdrawal(id: int, quantidade: int, andar: str):
