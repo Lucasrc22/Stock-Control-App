@@ -51,8 +51,6 @@ export default function ProductList() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Controle de Estoque</h1>
-
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
