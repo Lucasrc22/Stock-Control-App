@@ -32,9 +32,16 @@ export default function AddProductForm({ onAdd }: { onAdd: () => void }) {
     }
   };
 
+  const handleCancel = () => {
+    setNewProduct({ nome: '', estoque_atual: 0 });
+    setError('');
+    setSuccess(false);
+  };
+
   return (
     <div className="mt-8 p-6 bg-white rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">Adicionar Novo Produto</h2>
+
       {error && <div className="text-red-500 mb-2">{error}</div>}
       {success && <div className="text-green-600 mb-2">Produto adicionado com sucesso!</div>}
 
@@ -49,6 +56,7 @@ export default function AddProductForm({ onAdd }: { onAdd: () => void }) {
             disabled={loading}
           />
         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700">Estoque Inicial</label>
           <input
@@ -62,15 +70,27 @@ export default function AddProductForm({ onAdd }: { onAdd: () => void }) {
             disabled={loading}
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className={`inline-flex justify-center py-2 px-4 rounded-md text-white text-sm font-medium ${
-            loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          {loading ? 'Adicionando...' : 'Adicionar Produto'}
-        </button>
+
+        <div className="flex flex-row gap-x-4 justify-end mt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`py-2 px-4 rounded-md text-white text-sm font-medium ${
+              loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+          >
+            {loading ? 'Adicionando...' : 'Adicionar Produto'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={loading}
+            className="py-2 px-4 rounded-md text-sm font-medium bg-gray-200 hover:bg-gray-300 text-gray-700"
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
