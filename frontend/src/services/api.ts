@@ -12,10 +12,8 @@ interface Product {
   id: number;
   nome: string;
   estoque_atual: number;
-  data_entrada?: string;
-  data_saida?: string;
-  destinatario?: string;
-  quantidade?: number;
+  estoque_4andar: number;
+  estoque_5andar: number;
 }
 
 interface WithdrawalData {

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path, Body
 from pydantic import BaseModel
 from typing import List
 import csv
@@ -10,7 +10,7 @@ CSV_FILE = "app/data/products.csv"
 lock = threading.Lock()
 
 class ProductCreate(BaseModel):
-    id : int
+   
     nome: str
     estoque_atual: int
     estoque_4andar: int = 0
@@ -43,27 +43,17 @@ def write_products_to_csv(products: List[ProductResponse]):
             for product in products:
                 writer.writerow(product.dict())
 
-@router.post("/products/", response_model=ProductResponse)
-def create_product(product: ProductCreate):
-    products = read_products_from_csv()
-    new_id = max([p.id for p in products], default=0) + 1
-    new_product = ProductResponse(id=new_id, **product.dict())
-    products.append(new_product)
-    write_products_to_csv(products)
-    return new_product
 
-@router.get("/products/", response_model=List[ProductResponse])
-def list_products():
-    return read_products_from_csv()
+
 @router.put("/products/{product_id}", response_model=ProductResponse)
 def update_product(
     product_id: int = Path(..., gt=0),
-    updated_product: ProductCreate = None
+    updated_product: ProductCreate = Body(...)
 ):
     products = read_products_from_csv()
     
-    index = next((i for i, p in enumerate(products) if p.id == product_id), None)
-    if index is None:
+    index = next((i for i, p in enumerate(products) if p.id == product_id), -1)
+    if index == -1:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     
     updated_data = updated_product.dict()
@@ -73,6 +63,21 @@ def update_product(
     
     write_products_to_csv(products)
     return products[index]
+
+
+@router.post("/products", response_model=ProductResponse)
+def create_product(product: ProductCreate):
+    products = read_products_from_csv()
+    new_id = max([p.id for p in products], default=0) + 1
+    new_product = ProductResponse(id=new_id, **product.dict())
+    products.append(new_product)
+    write_products_to_csv(products)
+    return new_product
+
+@router.get("/products", response_model=List[ProductResponse])
+def list_products():
+    return read_products_from_csv()
+
 
 
 @router.post("/products/retirada")

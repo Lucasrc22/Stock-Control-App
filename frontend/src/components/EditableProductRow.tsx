@@ -13,14 +13,12 @@ export default function EditableProductRow({ product, onChange }: Props) {
   const [estoque5Andar, setEstoque5Andar] = useState(product.estoque_5andar ?? 0);
   const [saving, setSaving] = useState(false);
 
-  // Atualiza estado local se o produto externo mudar
   useEffect(() => {
     setEstoqueAtual(product.estoque_atual);
     setEstoque4Andar(product.estoque_4andar ?? 0);
     setEstoque5Andar(product.estoque_5andar ?? 0);
   }, [product]);
 
-  // Debounce para evitar muitas requisições PUT
   useEffect(() => {
     const timer = setTimeout(() => {
       const updatedProduct: Product = {
@@ -31,9 +29,9 @@ export default function EditableProductRow({ product, onChange }: Props) {
       };
       onChange(updatedProduct);
       saveProduct(updatedProduct);
-    }, 800); // Espera 800ms após última mudança
+    }, 800); 
 
-    return () => clearTimeout(timer); // Cancela timer se mudar antes do tempo
+    return () => clearTimeout(timer);
   }, [estoqueAtual, estoque4Andar, estoque5Andar]);
 
   async function saveProduct(updatedProduct: Product) {
@@ -44,7 +42,6 @@ export default function EditableProductRow({ product, onChange }: Props) {
     } catch (error) {
       console.error('Erro ao salvar produto:', error);
       setSaving(false);
-      // Aqui você pode mostrar um feedback visual de erro, se quiser
     }
   }
 
