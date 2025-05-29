@@ -6,7 +6,7 @@ import threading
 
 router = APIRouter()
 
-CSV_FILE = "data\products.csv"
+CSV_FILE = "app/data/products.csv"
 lock = threading.Lock()
 
 class ProductCreate(BaseModel):
