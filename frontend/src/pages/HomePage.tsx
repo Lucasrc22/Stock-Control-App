@@ -6,7 +6,7 @@ export default function HomePage() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleAddProduct = () => {
-    setRefreshKey(prev => prev + 1); // Força atualização da lista
+    setRefreshKey(prev => prev + 1); 
   };
 
   return (

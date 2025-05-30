@@ -1,0 +1,25 @@
+.header {
+  background-color: var(--light-blue);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  border: 1px solid white;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-blue);
+}
