@@ -1,8 +1,15 @@
 :root {
-  --primary-blue: #228be6;
-  --light-blue: #f0f8ff;
-  --white-ice: #f9fafa;
-  --text-dark: #0c4a6e;
-  --border-light: #e0e0e0;
-  --font-main: 'Segoe UI', sans-serif;
+  --color-primary: #228be6;       /* Azul bebê */
+  --color-background: #e6f0fa;    /* Branco gelo */
+  --color-text: #000000;          /* Preto para visibilidade */
+  --color-white: #ffffff;
+  --color-gray-light: #f7f9fc;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
 }

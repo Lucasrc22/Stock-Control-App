@@ -1,25 +1,67 @@
 .header {
-  background-color: var(--light-blue);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
+  max-width: 1024px;
+  margin: 0 auto;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
 
 .logo {
-  height: 24px;
-  width: 24px;
-  border-radius: 50%;
-  border: 1px solid white;
+  height: 48px;
   object-fit: contain;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-blue);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.input-style {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+  background-color: #f9f9f9;
+}
+
+.input-style:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.3);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #1a6fc1;
+}
+
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-secondary:hover {
+  background-color: #ccc;
 }

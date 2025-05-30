@@ -29,7 +29,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
       };
       onChange(updatedProduct);
       saveProduct(updatedProduct);
-    }, 800); 
+    }, 800);
 
     return () => clearTimeout(timer);
   }, [estoqueAtual, estoque4Andar, estoque5Andar]);
@@ -38,53 +38,53 @@ export default function EditableProductRow({ product, onChange }: Props) {
     try {
       setSaving(true);
       await axios.put(`http://localhost:8000/products/${updatedProduct.id}`, updatedProduct);
-      setSaving(false);
     } catch (error) {
       console.error('Erro ao salvar produto:', error);
+    } finally {
       setSaving(false);
     }
   }
 
   return (
-    <tr>
-      <td className="border px-2 py-1">{product.id}</td>
-      <td className="border px-2 py-1">{product.nome}</td>
+    <tr className="transition hover:bg-blue-50">
+      <td className="border px-3 py-2 text-center text-gray-800">{product.id}</td>
+      <td className="border px-3 py-2 text-gray-900">{product.nome}</td>
 
-      <td className="border px-2 py-1">
+      <td className="border px-3 py-2 text-center">
         <input
           type="number"
           min={0}
           value={estoqueAtual}
           onChange={e => setEstoqueAtual(Number(e.target.value))}
-          className="border rounded px-1 py-0.5 w-20"
+          className="w-20 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </td>
 
-      <td className="border px-2 py-1">
+      <td className="border px-3 py-2 text-center">
         <input
           type="number"
           min={0}
           value={estoque4Andar}
           onChange={e => setEstoque4Andar(Number(e.target.value))}
-          className="border rounded px-1 py-0.5 w-20"
+          className="w-20 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </td>
 
-      <td className="border px-2 py-1">
+      <td className="border px-3 py-2 text-center">
         <input
           type="number"
           min={0}
           value={estoque5Andar}
           onChange={e => setEstoque5Andar(Number(e.target.value))}
-          className="border rounded px-1 py-0.5 w-20"
+          className="w-20 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
         />
       </td>
 
-      <td className="border px-2 py-1">
+      <td className="border px-3 py-2 text-center">
         {saving ? (
-          <span className="text-sm text-gray-500">Salvando...</span>
+          <span className="text-sm text-gray-400 animate-pulse">Salvando...</span>
         ) : (
-          <span className="text-sm text-green-500">Salvo</span>
+          <span className="text-sm text-green-600">✔ Salvo</span>
         )}
       </td>
     </tr>

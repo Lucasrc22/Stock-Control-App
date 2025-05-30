@@ -1,5 +1,4 @@
-import "../styles/components.css";
-
+import '../styles/components.css'; // Certifique-se que o nome do arquivo está correto
 
 export default function Header() {
   return (
