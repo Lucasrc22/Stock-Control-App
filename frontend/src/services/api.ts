@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Tipagens
 interface Product {
   id: number;
   nome: string;
@@ -22,6 +21,11 @@ interface WithdrawalData {
   andar: string;
 }
 
+export interface WithdrawalResponse {
+  message: string;
+  produto: Product;
+}
+
 export const productService = {
   getAll: async (): Promise<Product[]> => {
     const response = await api.get('/products');
@@ -33,13 +37,13 @@ export const productService = {
     return response.data;
   },
 
-  registerWithdrawal: async (data: WithdrawalData): Promise<Product> => {
+  registerWithdrawal: async (data: WithdrawalData): Promise<WithdrawalResponse> => {
     const response = await api.post('/products/retirada', data);
     return response.data;
   },
 
-  updateProducts: async (products: Product[]): Promise<Product[]> => {
-    const response = await api.put('/products', products);
+  updateProduct: async (id: number, product: Omit<Product, 'id'>): Promise<Product> => {
+    const response = await api.put(`/products/${id}`, product);
     return response.data;
   },
 };

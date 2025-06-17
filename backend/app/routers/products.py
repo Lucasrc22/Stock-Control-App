@@ -10,7 +10,6 @@ CSV_FILE = "app/data/products.csv"
 lock = threading.Lock()
 
 class ProductCreate(BaseModel):
-   
     nome: str
     estoque_atual: int
     estoque_4andar: int = 0
@@ -18,7 +17,6 @@ class ProductCreate(BaseModel):
 
 class ProductResponse(ProductCreate):
     id: int
-
 
 def read_products_from_csv() -> List[ProductResponse]:
     products = []
@@ -43,28 +41,6 @@ def write_products_to_csv(products: List[ProductResponse]):
             for product in products:
                 writer.writerow(product.dict())
 
-
-
-@router.put("/products/{product_id}", response_model=ProductResponse)
-def update_product(
-    product_id: int = Path(..., gt=0),
-    updated_product: ProductCreate = Body(...)
-):
-    products = read_products_from_csv()
-    
-    index = next((i for i, p in enumerate(products) if p.id == product_id), -1)
-    if index == -1:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
-    updated_data = updated_product.dict()
-    updated_data["id"] = product_id 
-    
-    products[index] = ProductResponse(**updated_data)
-    
-    write_products_to_csv(products)
-    return products[index]
-
-
 @router.post("/products", response_model=ProductResponse)
 def create_product(product: ProductCreate):
     products = read_products_from_csv()
@@ -78,26 +54,58 @@ def create_product(product: ProductCreate):
 def list_products():
     return read_products_from_csv()
 
+@router.put("/products/{product_id}", response_model=ProductResponse)
+def update_product(
+    product_id: int = Path(..., gt=0),
+    updated_product: ProductCreate = Body(...)
+):
+    products = read_products_from_csv()
+    index = next((i for i, p in enumerate(products) if p.id == product_id), -1)
+    if index == -1:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
 
+    updated_data = updated_product.dict()
+    updated_data["id"] = product_id
+    products[index] = ProductResponse(**updated_data)
+    write_products_to_csv(products)
+    return products[index]
 
 @router.post("/products/retirada")
-def register_withdrawal(id: int, quantidade: int, andar: str):
+def register_withdrawal(
+    id: int = Body(...),
+    quantidade: int = Body(...),
+    andar: str = Body(...)
+):
     products = read_products_from_csv()
     product = next((p for p in products if p.id == id), None)
+
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
+
+    if quantidade <= 0:
+        raise HTTPException(status_code=400, detail="Quantidade inválida")
+
     if product.estoque_atual < quantidade:
         raise HTTPException(status_code=400, detail="Estoque insuficiente")
-    
-    product.estoque_atual -= quantidade
-    
+
     if andar == "4º andar":
         product.estoque_4andar += quantidade
     elif andar == "5º andar":
         product.estoque_5andar += quantidade
     else:
-        raise HTTPException(status_code=400, detail="Andar inválido. Use '4º andar' ou '5º andar'")
-    
+        raise HTTPException(status_code=400, detail="Andar inválido. Use '4º andar' ou '5º andar'.")
+
+    product.estoque_atual -= quantidade
+
+    for i, p in enumerate(products):
+        if p.id == id:
+            products[i] = product
+            break
+
     write_products_to_csv(products)
-    return {"message": "Retirada registrada com sucesso"}
+
+    return {
+    "message": "Retirada registrada com sucesso",
+    "produto": product
+    }
+
