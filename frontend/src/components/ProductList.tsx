@@ -9,17 +9,18 @@ export default function ProductList() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = async () => {
-    try {
-      const response = await axios.get<Product[]>('http://localhost:8000/products');
-      setProducts(response.data);
-      setError(null);
-    } catch (err) {
-      setError('Erro ao carregar produtos');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await axios.get<Product[]>(`${import.meta.env.VITE_API_URL}/products`);
+    setProducts(response.data);
+    setError(null);
+  } catch (err) {
+    setError('Erro ao carregar produtos');
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchProducts();
