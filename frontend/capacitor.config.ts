@@ -1,9 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'stockcontrol.app',
+  appId: 'com.stockcontrol',
   appName: 'StockControl',
-  webDir: 'dist'
+  webDir: 'dist',
+  server: {
+    androidScheme: "http"
+  }
 };
+
 
 export default config;
