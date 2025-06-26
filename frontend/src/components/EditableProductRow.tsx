@@ -9,9 +9,12 @@ interface Props {
 
 export default function EditableProductRow({ product, onChange }: Props) {
   const [estoqueAtual, setEstoqueAtual] = useState(product.estoque_atual);
-  const [showWithdrawal, setShowWithdrawal] = useState(false);
   const [quantidadeRetirada, setQuantidadeRetirada] = useState(0);
-  const [andarRetirada, setAndarRetirada] = useState('4º andar');
+  const [quantidadeConsumo, setQuantidadeConsumo] = useState(0);
+  const [andarRetirada, setAndarRetirada] = useState('4');
+  const [andarConsumo, setAndarConsumo] = useState('4');
+  const [showWithdrawal, setShowWithdrawal] = useState(false);
+  const [showConsumo, setShowConsumo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [savingEstoqueAtual, setSavingEstoqueAtual] = useState(false);
 
@@ -21,31 +24,21 @@ export default function EditableProductRow({ product, onChange }: Props) {
 
   useEffect(() => {
     if (estoqueAtual === product.estoque_atual) return;
-
-    const timer = setTimeout(() => {
-      saveEstoqueAtual();
-    }, 800);
-
+    const timer = setTimeout(() => saveEstoqueAtual(), 800);
     return () => clearTimeout(timer);
   }, [estoqueAtual]);
 
   async function saveEstoqueAtual() {
     setSavingEstoqueAtual(true);
     try {
-      const updatedProductData: Omit<Product, 'id'> = {
-      nome: product.nome,
-      estoque_atual: estoqueAtual,
-      estoque_4andar: product.estoque_4andar ?? 0,
-      estoque_5andar: product.estoque_5andar ?? 0,
-    };
-
-
-
-      const updatedProduct = await productService.updateProduct(product.id, updatedProductData);
-
+      const updatedProduct = await productService.updateProduct(product.id, {
+        nome: product.nome,
+        estoque_atual: estoqueAtual,
+        estoque_4andar: product.estoque_4andar ?? 0,
+        estoque_5andar: product.estoque_5andar ?? 0,
+      });
       onChange(updatedProduct);
     } catch (error) {
-      console.error('Erro ao salvar estoque atual:', error);
       alert('Erro ao salvar estoque atual');
     } finally {
       setSavingEstoqueAtual(false);
@@ -53,11 +46,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
   }
 
   async function handleRegisterWithdrawal() {
-    if (quantidadeRetirada <= 0) {
-      alert('Informe uma quantidade válida para retirada');
-      return;
-    }
-
+    if (quantidadeRetirada <= 0) return alert('Informe uma quantidade válida para retirada');
     setLoading(true);
     try {
       const response = await productService.registerWithdrawal({
@@ -65,19 +54,30 @@ export default function EditableProductRow({ product, onChange }: Props) {
         quantidade: quantidadeRetirada,
         andar: andarRetirada,
       });
-
-      if (response.produto) {
-        onChange(response.produto);
-      } else {
-        alert('Retirada registrada, mas não foi possível atualizar localmente');
-      }
-
-
+      onChange(response.produto);
       setQuantidadeRetirada(0);
       setShowWithdrawal(false);
-    } catch (error) {
-      console.error('Erro ao registrar retirada:', error);
+    } catch {
       alert('Erro ao registrar retirada');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRegisterConsumo() {
+    if (quantidadeConsumo <= 0) return alert('Informe uma quantidade válida para consumo');
+    setLoading(true);
+    try {
+      const response = await productService.consumirProduto({
+        id: product.id,
+        quantidade: quantidadeConsumo,
+        andar: andarConsumo,
+      });
+      onChange(response.produto);
+      setQuantidadeConsumo(0);
+      setShowConsumo(false);
+    } catch {
+      alert('Erro ao registrar consumo');
     } finally {
       setLoading(false);
     }
@@ -85,66 +85,80 @@ export default function EditableProductRow({ product, onChange }: Props) {
 
   return (
     <tr className="transition hover:bg-blue-50">
-      <td className="border px-3 py-2 text-center text-gray-800">{product.id}</td>
-      <td className="border px-3 py-2 text-gray-900">{product.nome}</td>
+      <td className="border px-3 py-2 text-center">{product.id}</td>
+      <td className="border px-3 py-2">{product.nome}</td>
       <td className="border px-3 py-2 text-center">
         <input
           type="number"
           min={0}
           value={estoqueAtual}
           onChange={e => setEstoqueAtual(Number(e.target.value))}
-          className="w-20 rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-20 text-center border rounded"
         />
-        {savingEstoqueAtual && (
-          <div className="text-xs text-gray-400 mt-1 animate-pulse">Salvando...</div>
-        )}
+        {savingEstoqueAtual && <div className="text-xs text-gray-400 animate-pulse">Salvando...</div>}
       </td>
-      <td className="border px-3 py-2 text-center text-gray-700 select-none">
-        {product.estoque_4andar ?? 0}
-      </td>
-      <td className="border px-3 py-2 text-center text-gray-700 select-none">
-        {product.estoque_5andar ?? 0}
-      </td>
-      <td className="border px-3 py-2 text-center">
+      <td className="border px-3 py-2 text-center">{product.estoque_4andar}</td>
+      <td className="border px-3 py-2 text-center">{product.estoque_5andar}</td>
+      <td className="border px-3 py-2 text-center space-y-1">
         {!showWithdrawal && (
-          <button
-            onClick={() => setShowWithdrawal(true)}
-            className="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition"
-          >
+          <button onClick={() => setShowWithdrawal(true)} className="bg-blue-600 text-white px-2 py-1 rounded">
             Registrar Retirada
           </button>
         )}
         {showWithdrawal && (
-          <div className="mt-2 flex flex-col items-center space-y-2">
+          <div className="space-y-2">
             <input
               type="number"
               min={1}
               value={quantidadeRetirada}
               onChange={e => setQuantidadeRetirada(Number(e.target.value))}
-              placeholder="Quantidade"
-              className="w-24 border border-gray-300 rounded px-2 py-1 text-center"
+              className="w-24 border rounded px-2 py-1 text-center"
+              placeholder="Qtd."
             />
             <select
               value={andarRetirada}
-              onChange={e => setAndarRetirada(e.target.value)}
-              className="w-24 border border-gray-300 rounded px-2 py-1"
+              onChange={(e) => setAndarRetirada(e.target.value)}
+              className="w-24 border rounded"
             >
               <option value="4º andar">4º andar</option>
               <option value="5º andar">5º andar</option>
             </select>
+
             <div className="flex space-x-2">
-              <button
-                onClick={handleRegisterWithdrawal}
-                disabled={loading}
-                className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition disabled:opacity-50"
-              >
-                {loading ? 'Registrando...' : 'Confirmar'}
+              <button onClick={handleRegisterWithdrawal} disabled={loading} className="bg-green-600 text-white px-2 py-1 rounded">
+                Confirmar
               </button>
-              <button
-                onClick={() => setShowWithdrawal(false)}
-                disabled={loading}
-                className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition disabled:opacity-50"
-              >
+              <button onClick={() => setShowWithdrawal(false)} className="bg-red-600 text-white px-2 py-1 rounded">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!showConsumo && (
+          <button onClick={() => setShowConsumo(true)} className="bg-purple-600 text-white px-2 py-1 rounded">
+            Registrar Consumo
+          </button>
+        )}
+        {showConsumo && (
+          <div className="space-y-2">
+            <input
+              type="number"
+              min={1}
+              value={quantidadeConsumo}
+              onChange={e => setQuantidadeConsumo(Number(e.target.value))}
+              className="w-24 border rounded px-2 py-1 text-center"
+              placeholder="Qtd."
+            />
+            <select value={andarConsumo} onChange={e => setAndarConsumo(e.target.value)} className="w-24 border rounded">
+              <option value="4">4º andar</option>
+              <option value="5">5º andar</option>
+            </select>
+            <div className="flex space-x-2">
+              <button onClick={handleRegisterConsumo} disabled={loading} className="bg-green-600 text-white px-2 py-1 rounded">
+                Confirmar
+              </button>
+              <button onClick={() => setShowConsumo(false)} className="bg-red-600 text-white px-2 py-1 rounded">
                 Cancelar
               </button>
             </div>

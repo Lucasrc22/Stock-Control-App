@@ -20,7 +20,11 @@ interface WithdrawalData {
   quantidade: number;
   andar: string;
 }
-
+interface ConsumoData {
+  id: number;
+  quantidade: number;
+  andar: string; // deve ser "4" ou "5"
+}
 export interface WithdrawalResponse {
   message: string;
   produto: Product;
@@ -46,6 +50,11 @@ export const productService = {
     const response = await api.put(`/products/${id}`, product);
     return response.data;
   },
+  consumirProduto: async (data: ConsumoData): Promise<WithdrawalResponse> => {
+    const response = await api.post('/products/consumo', data);
+    return response.data;
+},
+
 };
 
 export default api;
