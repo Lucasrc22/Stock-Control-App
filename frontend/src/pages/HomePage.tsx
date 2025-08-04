@@ -13,7 +13,7 @@ export default function HomePage() {
     <div
       className="min-h-screen py-8"
       style={{
-        backgroundImage: "url('/assets/background.jpg')",
+        /*backgroundImage: "url('/assets/background.jpg')",*/
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

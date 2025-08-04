@@ -1,0 +1,71 @@
+.input-small {
+  width: 6rem;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-small:focus {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+.select-small {
+  width: 6rem;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 0.9rem;
+}
+
+.button-action {
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.button-action:hover {
+  filter: brightness(1.1);
+}
+
+.spinner-text {
+  font-size: 0.75rem;
+  color: #888;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+.icone-movimentacao {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.icone-movimentacao:hover {
+  transform: scale(1.2);
+}
+.icone-alerta {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.icone-alerta:hover {
+  transform: scale(1.1);
+}

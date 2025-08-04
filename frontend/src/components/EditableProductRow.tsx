@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { productService } from '../services/api';
+import '../styles/EditableProductRow.css';
+import MovimentacaoList from './MovimentacaoList';
+
 
 interface Props {
   product: Product;
@@ -85,24 +88,33 @@ export default function EditableProductRow({ product, onChange }: Props) {
 
   return (
     <tr className="transition hover:bg-blue-50">
-      <td className="border px-3 py-2 text-center">{product.id}</td>
+      <td className="border px-3 py-4 text-center">{product.id}</td>
       <td className="border px-3 py-2">{product.nome}</td>
-      <td className="border px-3 py-2 text-center">
+      <td className="border px-3 py-4 text-center">
         <input
           type="number"
           min={0}
           value={estoqueAtual}
           onChange={e => setEstoqueAtual(Number(e.target.value))}
-          className="w-20 text-center border rounded"
+          className="input-small"
         />
-        {savingEstoqueAtual && <div className="text-xs text-gray-400 animate-pulse">Salvando...</div>}
+        {savingEstoqueAtual && <div className="spinner-text">Salvando...</div>}
       </td>
-      <td className="border px-3 py-2 text-center">{product.estoque_4andar}</td>
-      <td className="border px-3 py-2 text-center">{product.estoque_5andar}</td>
-      <td className="border px-3 py-2 text-center space-y-1">
+      <td className="border px-3 py-4 text-center">{product.estoque_4andar}</td>
+      <td className="border px-3 py-4 text-center">{product.estoque_5andar}</td>
+      <td className="border px-3 py-4 text-center space-y-1 relative">
+
+        {/* Botão / popover do histórico de movimentação */}
+        <div style={{ position: "relative", display: "inline-block", marginBottom: 8 }}>
+          <MovimentacaoList productId={product.id} />
+        </div>
+
         {!showWithdrawal && (
-          <button onClick={() => setShowWithdrawal(true)} className="bg-blue-600 text-white px-2 py-1 rounded">
-            Registrar Retirada
+          <button
+            onClick={() => setShowWithdrawal(true)}
+            className="button-action bg-blue-600 text-white"
+          >
+            Andar Destinado
           </button>
         )}
         {showWithdrawal && (
@@ -112,23 +124,30 @@ export default function EditableProductRow({ product, onChange }: Props) {
               min={1}
               value={quantidadeRetirada}
               onChange={e => setQuantidadeRetirada(Number(e.target.value))}
-              className="w-24 border rounded px-2 py-1 text-center"
+              className="input-small"
               placeholder="Qtd."
             />
             <select
               value={andarRetirada}
               onChange={(e) => setAndarRetirada(e.target.value)}
-              className="w-24 border rounded"
+              className="select-small"
             >
               <option value="4º andar">4º andar</option>
               <option value="5º andar">5º andar</option>
             </select>
 
             <div className="flex space-x-2">
-              <button onClick={handleRegisterWithdrawal} disabled={loading} className="bg-green-600 text-white px-2 py-1 rounded">
+              <button
+                onClick={handleRegisterWithdrawal}
+                disabled={loading}
+                className="button-action bg-green-600 text-white"
+              >
                 Confirmar
               </button>
-              <button onClick={() => setShowWithdrawal(false)} className="bg-red-600 text-white px-2 py-1 rounded">
+              <button
+                onClick={() => setShowWithdrawal(false)}
+                className="button-action bg-red-600 text-white"
+              >
                 Cancelar
               </button>
             </div>
@@ -136,7 +155,10 @@ export default function EditableProductRow({ product, onChange }: Props) {
         )}
 
         {!showConsumo && (
-          <button onClick={() => setShowConsumo(true)} className="bg-purple-600 text-white px-2 py-1 rounded">
+          <button
+            onClick={() => setShowConsumo(true)}
+            className="button-action bg-purple-600 text-white"
+          >
             Registrar Consumo
           </button>
         )}
@@ -147,18 +169,29 @@ export default function EditableProductRow({ product, onChange }: Props) {
               min={1}
               value={quantidadeConsumo}
               onChange={e => setQuantidadeConsumo(Number(e.target.value))}
-              className="w-24 border rounded px-2 py-1 text-center"
+              className="input-small"
               placeholder="Qtd."
             />
-            <select value={andarConsumo} onChange={e => setAndarConsumo(e.target.value)} className="w-24 border rounded">
+            <select
+              value={andarConsumo}
+              onChange={e => setAndarConsumo(e.target.value)}
+              className="select-small"
+            >
               <option value="4">4º andar</option>
               <option value="5">5º andar</option>
             </select>
             <div className="flex space-x-2">
-              <button onClick={handleRegisterConsumo} disabled={loading} className="bg-green-600 text-white px-2 py-1 rounded">
+              <button
+                onClick={handleRegisterConsumo}
+                disabled={loading}
+                className="button-action bg-green-600 text-white"
+              >
                 Confirmar
               </button>
-              <button onClick={() => setShowConsumo(false)} className="bg-red-600 text-white px-2 py-1 rounded">
+              <button
+                onClick={() => setShowConsumo(false)}
+                className="button-action bg-red-600 text-white"
+              >
                 Cancelar
               </button>
             </div>

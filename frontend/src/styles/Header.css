@@ -1,0 +1,31 @@
+/* components.css */
+
+.header {
+  background-color: #285956; /* azul forte */
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.3);
+  display: flex;
+  justify-content: center; /* centraliza o conteúdo horizontalmente */
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  max-width: 1200px; /* limita a largura máxima */
+  width: 100%;
+  gap: 1rem;
+}
+
+.logo {
+  height: 48px;
+  width: 48px;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: rgb(255, 255, 255);
+  user-select: none;
+  margin: 0;
+}

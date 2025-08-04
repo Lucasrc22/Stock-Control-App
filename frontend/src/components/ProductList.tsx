@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Product } from '../types';
 import EditableProductRow from './EditableProductRow';
+import '../styles/ProductList.css';
 
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,7 +36,8 @@ export default function ProductList() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-400"></div>
+        <div className="animate-spin-slow rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-400"></div>
+
       </div>
     );
   }
@@ -49,8 +51,7 @@ export default function ProductList() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h2 className="text-2xl font-bold text-center mb-6 text-black">Estoque Atual</h2>
+    <div className="container mx-auto px-4 py-6 flex justify-center">
       <div className="overflow-x-auto rounded-xl shadow-md">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
           <thead className="bg-[#E6F1FA] text-gray-700 font-semibold">

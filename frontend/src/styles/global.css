@@ -1,16 +1,46 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* src/index.css */
+
+:root {
+  --color-primary: #228be6;
+  --color-secondary: #ffffff;
+  --color-dark: #1a1a1a;
+  --color-light: #ffffff;
+  --font-main: 'Inter', sans-serif;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   font-family: var(--font-main);
-  background-color: var(--white-ice);
-  color: var(--text-dark);
+  background-image: url('/frontend/public/assets/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  color: var(--color-dark);
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Tipografia global */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Scrollbar moderna */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
