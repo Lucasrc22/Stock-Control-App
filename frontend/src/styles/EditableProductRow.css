@@ -69,3 +69,17 @@
 .icone-alerta:hover {
   transform: scale(1.1);
 }
+.input-quantidade {
+  width: 80px;
+  padding: 8px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Garante setas visíveis em todos navegadores */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: auto;
+  margin: 0;
+}
