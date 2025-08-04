@@ -20,13 +20,12 @@ export default function AddProductForm({ onAdd }: { onAdd: () => void }) {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/products', newProduct);
+      await axios.post(`${import.meta.env.VITE_API_URL}/products`, newProduct);
       setNewProduct({ nome: '', estoque_atual: 0 });
       setSuccess(true);
       onAdd();
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      console.error(err);
       setError('Erro ao adicionar produto.');
     } finally {
       setLoading(false);
@@ -75,7 +74,10 @@ export default function AddProductForm({ onAdd }: { onAdd: () => void }) {
             className="input-style"
             value={newProduct.estoque_atual}
             onChange={(e) =>
-              setNewProduct({ ...newProduct, estoque_atual: parseInt(e.target.value) || 0 })
+              setNewProduct({
+                ...newProduct,
+                estoque_atual: Number(e.target.value) >= 0 ? Number(e.target.value) : 0
+              })
             }
             disabled={loading}
           />
