@@ -21,7 +21,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
   const [showAddEstoque, setShowAddEstoque] = useState(false);
 
   useEffect(() => {
-    // Limpar inputs ao mudar produto
+    
     setQuantidadeRetirada(0);
     setQuantidadeConsumo(0);
     setAddEstoque(0);
