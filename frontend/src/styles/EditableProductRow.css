@@ -94,7 +94,7 @@ input[type=number]::-webkit-outer-spin-button {
   margin-bottom: 1.5rem; /* espaçamento entre os blocos */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* sombra suave */
   transition: box-shadow 0.25s ease;
-  color: white; /* garante contraste com o fundo escuro */
+  color: rgb(0, 0, 0); /* garante contraste com o fundo escuro */
 }
 
 .bloco-produto:hover {
