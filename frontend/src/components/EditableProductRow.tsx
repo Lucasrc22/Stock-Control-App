@@ -87,156 +87,166 @@ export default function EditableProductRow({ product, onChange }: Props) {
   }
 
   return (
-  <tr className="transition hover:bg-blue-50">
-    <td className="border px-3 py-4 text-center">{product.id}</td>
-    <td className="border px-3 py-2">{product.nome}</td>
-
-    <td className="border px-3 py-4 text-center">
-      {/* Estoque Atual somente leitura */}
-      <input
-        type="number"
-        className="input-quantidade"
-        value={product.estoque_atual}
-        readOnly
-      />
-
-      {!showAddEstoque && (
-        <button
-          onClick={() => setShowAddEstoque(true)}
-          className="button-action bg-green-600 text-white mt-2"
-        >
-          Adicionar Estoque
-        </button>
-      )}
-
-      {showAddEstoque && (
-        <div className="mt-2 flex items-center space-x-2">
-          <input
-            type="number"
-            min={1}
-            className="input-quantidade"
-            placeholder="Qtd. a adicionar"
-            value={addEstoque}
-            onChange={e => setAddEstoque(Number(e.target.value))}
-          />
-          <button
-            onClick={handleAdicionarEstoque}
-            disabled={loading}
-            className="button-action bg-green-600 text-white"
-          >
-            Confirmar
-          </button>
-          <button
-            onClick={() => {
-              setShowAddEstoque(false);
-              setAddEstoque(0);
-            }}
-            className="button-action bg-red-600 text-white"
-          >
-            Cancelar
-          </button>
-        </div>
-      )}
+  <tr className="transition hover:bg-blue-50 border-b-2 border-gray-200">
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2">{product.id}</div>
+    </td>
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2">{product.nome}</div>
     </td>
 
-    <td className="border px-3 py-4 text-center">{product.estoque_4andar}</td>
-    <td className="border px-3 py-4 text-center">{product.estoque_5andar}</td>
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2">
+        <input
+          type="number"
+          className="input-quantidade"
+          value={product.estoque_atual}
+          readOnly
+        />
 
-    <td className="border px-3 py-4 text-center space-y-1 relative">
-      <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
-        <MovimentacaoList productId={product.id} />
+        {!showAddEstoque && (
+          <button
+            onClick={() => setShowAddEstoque(true)}
+            className="button-action bg-green-600 text-white mt-2"
+          >
+            Adicionar Estoque
+          </button>
+        )}
+
+        {showAddEstoque && (
+          <div className="mt-2 flex items-center space-x-2">
+            <input
+              type="number"
+              min={1}
+              className="input-quantidade"
+              placeholder="Qtd. a adicionar"
+              value={addEstoque}
+              onChange={e => setAddEstoque(Number(e.target.value))}
+            />
+            <button
+              onClick={handleAdicionarEstoque}
+              disabled={loading}
+              className="button-action bg-green-600 text-white"
+            >
+              Confirmar
+            </button>
+            <button
+              onClick={() => {
+                setShowAddEstoque(false);
+                setAddEstoque(0);
+              }}
+              className="button-action bg-red-600 text-white"
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
       </div>
+    </td>
 
-      {!showWithdrawal && (
-        <button
-          onClick={() => setShowWithdrawal(true)}
-          className="button-action bg-blue-600 text-white"
-        >
-          Andar Destinado
-        </button>
-      )}
-      {showWithdrawal && (
-        <div className="space-y-2">
-          <input
-            type="number"
-            min={1}
-            value={quantidadeRetirada}
-            onChange={e => setQuantidadeRetirada(Number(e.target.value))}
-            className="input-quantidade"
-            placeholder="Qtd."
-          />
-          <select
-            value={andarRetirada}
-            onChange={e => setAndarRetirada(e.target.value)}
-            className="select-small"
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2">{product.estoque_4andar}</div>
+    </td>
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2">{product.estoque_5andar}</div>
+    </td>
+
+    <td className="bloco-produto">
+      <div className="bg-white/60 rounded-xl p-2 space-y-2">
+        <MovimentacaoList productId={product.id} />
+
+        {!showWithdrawal && (
+          <button
+            onClick={() => setShowWithdrawal(true)}
+            className="button-action bg-blue-600 text-white"
           >
-            <option value="4º andar">4º andar</option>
-            <option value="5º andar">5º andar</option>
-          </select>
+            Andar Destinado
+          </button>
+        )}
+        {showWithdrawal && (
+          <div className="space-y-2">
+            <input
+              type="number"
+              min={1}
+              value={quantidadeRetirada}
+              onChange={e => setQuantidadeRetirada(Number(e.target.value))}
+              className="input-quantidade"
+              placeholder="Qtd."
+            />
+            <select
+              value={andarRetirada}
+              onChange={e => setAndarRetirada(e.target.value)}
+              className="select-small"
+            >
+              <option value="4º andar">4º andar</option>
+              <option value="5º andar">5º andar</option>
+            </select>
 
-          <div className="flex space-x-2">
-            <button
-              onClick={handleRegisterWithdrawal}
-              disabled={loading}
-              className="button-action bg-green-600 text-white"
-            >
-              Confirmar
-            </button>
-            <button
-              onClick={() => setShowWithdrawal(false)}
-              className="button-action bg-red-600 text-white"
-            >
-              Cancelar
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleRegisterWithdrawal}
+                disabled={loading}
+                className="button-action bg-green-600 text-white"
+              >
+                Confirmar
+              </button>
+              <button
+                onClick={() => setShowWithdrawal(false)}
+                className="button-action bg-red-600 text-white"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {!showConsumo && (
-        <button
-          onClick={() => setShowConsumo(true)}
-          className="button-action bg-purple-600 text-white"
-        >
-          Registrar Consumo
-        </button>
-      )}
-      {showConsumo && (
-        <div className="space-y-2">
-          <input
-            type="number"
-            min={1}
-            value={quantidadeConsumo}
-            onChange={e => setQuantidadeConsumo(Number(e.target.value))}
-            className="input-quantidade"
-            placeholder="Qtd."
-          />
-          <select
-            value={andarConsumo}
-            onChange={e => setAndarConsumo(e.target.value)}
-            className="select-small"
+        {!showConsumo && (
+          <button
+            onClick={() => setShowConsumo(true)}
+            className="button-action bg-purple-600 text-white"
           >
-            <option value="4">4º andar</option>
-            <option value="5">5º andar</option>
-          </select>
-          <div className="flex space-x-2">
-            <button
-              onClick={handleRegisterConsumo}
-              disabled={loading}
-              className="button-action bg-green-600 text-white"
+            Registrar Consumo
+          </button>
+        )}
+        {showConsumo && (
+          <div className="space-y-2">
+            <input
+              type="number"
+              min={1}
+              value={quantidadeConsumo}
+              onChange={e => setQuantidadeConsumo(Number(e.target.value))}
+              className="input-quantidade"
+              placeholder="Qtd."
+            />
+            <select
+              value={andarConsumo}
+              onChange={e => setAndarConsumo(e.target.value)}
+              className="select-small"
             >
-              Confirmar
-            </button>
-            <button
-              onClick={() => setShowConsumo(false)}
-              className="button-action bg-red-600 text-white"
-            >
-              Cancelar
-            </button>
+              <option value="4">4º andar</option>
+              <option value="5">5º andar</option>
+            </select>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleRegisterConsumo}
+                disabled={loading}
+                className="button-action bg-green-600 text-white"
+              >
+                Confirmar
+              </button>
+              <button
+                onClick={() => setShowConsumo(false)}
+                className="button-action bg-red-600 text-white"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </td>
   </tr>
 );
+
 
 }

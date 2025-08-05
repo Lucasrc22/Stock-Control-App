@@ -41,6 +41,9 @@
   color: #888;
   animation: pulse 1.5s infinite;
 }
+.linha-produto {
+  border-bottom: 2px solid #e5e7eb; /* Tailwind gray-200 */
+}
 
 @keyframes pulse {
   0% { opacity: 1; }
@@ -82,4 +85,18 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: auto;
   margin: 0;
+}
+
+.bloco-produto {
+  background: linear-gradient(135deg, #56c2bb 20%, #4ba59f 20%,#61d8d0 20%, #4aaaa4 10%);
+  border-radius: 1rem; /* bordas arredondadas */
+  padding: 0.75rem; /* espaçamento interno reduzido */
+  margin-bottom: 1.5rem; /* espaçamento entre os blocos */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* sombra suave */
+  transition: box-shadow 0.25s ease;
+  color: white; /* garante contraste com o fundo escuro */
+}
+
+.bloco-produto:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
