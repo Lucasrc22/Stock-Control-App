@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">StockControl</string>
-    <string name="title_activity_main">StockControl</string>
-    <string name="package_name">com.stockcontrol</string>
-    <string name="custom_url_scheme">com.stockcontrol</string>
+    <string name="app_name">Galactus Stock Control</string>
+    <string name="title_activity_main">Galactus Stock Control</string>
+    <string name="package_name">stockcontrol.app</string>
+    <string name="custom_url_scheme">stockcontrol.app</string>
 </resources>
