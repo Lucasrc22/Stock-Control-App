@@ -1,0 +1,88 @@
+id_produto,tipo,quantidade,andar,timestamp
+1,adicao_estoque_atual,40,geral,2025-08-16T11:38:22.798075-03:00
+2,adicao_estoque_atual,8,geral,2025-08-16T11:38:59.515432-03:00
+6,adicao_estoque_atual,11,geral,2025-08-16T11:39:16.413537-03:00
+3,adicao_estoque_atual,5,geral,2025-08-16T11:39:35.417984-03:00
+4,adicao_estoque_atual,3,geral,2025-08-16T11:39:42.346139-03:00
+5,adicao_estoque_atual,2,geral,2025-08-16T11:39:51.277702-03:00
+7,adicao_estoque_atual,1,geral,2025-08-16T11:39:56.193184-03:00
+9,adicao_estoque_atual,1,geral,2025-08-16T11:40:05.293248-03:00
+11,adicao_estoque_atual,3,geral,2025-08-16T11:40:19.323016-03:00
+13,adicao_estoque_atual,2,geral,2025-08-16T11:40:24.242425-03:00
+16,adicao_estoque_atual,7,geral,2025-08-16T11:40:36.172356-03:00
+17,adicao_estoque_atual,3,geral,2025-08-16T11:40:45.286325-03:00
+18,adicao_estoque_atual,1,geral,2025-08-16T11:40:49.325167-03:00
+20,adicao_estoque_atual,25,geral,2025-08-16T11:42:05.581851-03:00
+21,adicao_estoque_atual,26,geral,2025-08-16T11:42:49.614293-03:00
+22,adicao_estoque_atual,35,geral,2025-08-16T11:43:23.824602-03:00
+23,adicao_estoque_atual,46,geral,2025-08-16T11:44:06.559999-03:00
+24,adicao_estoque_atual,32,geral,2025-08-16T11:44:47.281582-03:00
+25,adicao_estoque_atual,2,geral,2025-08-16T11:45:01.188741-03:00
+26,adicao_estoque_atual,2,geral,2025-08-16T11:45:08.506860-03:00
+27,adicao_estoque_atual,1,geral,2025-08-16T11:45:14.276814-03:00
+35,adicao_estoque_atual,3,geral,2025-08-16T11:45:31.789163-03:00
+14,adicao_estoque_atual,1,geral,2025-08-16T11:45:57.978511-03:00
+28,adicao_estoque_atual,6,geral,2025-08-16T11:48:58.184360-03:00
+29,adicao_estoque_atual,3,geral,2025-08-16T11:49:05.331085-03:00
+30,adicao_estoque_atual,7,geral,2025-08-16T11:49:12.635902-03:00
+31,adicao_estoque_atual,3,geral,2025-08-16T11:49:26.191690-03:00
+32,adicao_estoque_atual,6,geral,2025-08-16T11:49:37.515105-03:00
+34,adicao_estoque_atual,14,geral,2025-08-16T11:50:16.799662-03:00
+37,adicao_estoque_atual,4,geral,2025-08-16T11:50:43.811528-03:00
+41,adicao_estoque_atual,3,geral,2025-08-16T11:51:43.343528-03:00
+40,adicao_estoque_atual,1,geral,2025-08-16T11:51:50.764486-03:00
+44,adicao_estoque_atual,3,geral,2025-08-16T11:51:59.206674-03:00
+24,Andar Destinado,2,5º andar,2025-08-18T09:04:37.226326-03:00
+23,Andar Destinado,3,5º andar,2025-08-18T09:04:49.961351-03:00
+22,Andar Destinado,1,5º andar,2025-08-18T09:06:02.046474-03:00
+21,Andar Destinado,1,5º andar,2025-08-18T09:06:09.640706-03:00
+1,Andar Destinado,1,4,2025-08-18T09:06:19.276161-03:00
+1,Andar Destinado,1,5º andar,2025-08-18T09:06:26.047280-03:00
+6,Andar Destinado,1,4,2025-08-18T09:06:33.748031-03:00
+6,Andar Destinado,1,5º andar,2025-08-18T09:06:41.942133-03:00
+31,Andar Destinado,1,4,2025-08-18T09:07:55.975745-03:00
+31,Andar Destinado,1,5º andar,2025-08-18T09:08:02.201818-03:00
+6,Andar Destinado,1,4,2025-08-19T09:24:25.795935-03:00
+24,Andar Destinado,2,5º andar,2025-08-19T09:24:51.615136-03:00
+25,Andar Destinado,1,5º andar,2025-08-19T09:24:58.493230-03:00
+20,Andar Destinado,1,5º andar,2025-08-19T09:25:28.456701-03:00
+24,Andar Destinado,1,4º andar,2025-08-19T09:26:07.332342-03:00
+23,Andar Destinado,1,5º andar,2025-08-20T08:58:21.385857-03:00
+24,Andar Destinado,2,5º andar,2025-08-20T08:58:32.096318-03:00
+32,Andar Destinado,1,5º andar,2025-08-20T08:58:46.287468-03:00
+37,Andar Destinado,1,5º andar,2025-08-20T08:58:55.821001-03:00
+21,Andar Destinado,1,5º andar,2025-08-20T08:59:34.714756-03:00
+1,Andar Destinado,1,5º andar,2025-08-20T08:59:40.596090-03:00
+1,Andar Destinado,1,4º andar,2025-08-20T08:59:49.553873-03:00
+6,Andar Destinado,1,5º andar,2025-08-20T08:59:59.428319-03:00
+5,Andar Destinado,1,5º andar,2025-08-20T09:00:44.161953-03:00
+9,Andar Destinado,1,5º andar,2025-08-20T09:00:56.709581-03:00
+21,Andar Destinado,1,4º andar,2025-08-20T09:01:36.924549-03:00
+25,Andar Destinado,1,4º andar,2025-08-20T09:01:45.400990-03:00
+22,Andar Destinado,1,4,2025-08-20T09:02:50.871393-03:00
+23,Andar Destinado,4,4º andar,2025-08-20T09:04:01.772649-03:00
+11,Andar Destinado,1,4,2025-08-20T15:17:54.033082-03:00
+11,Andar Destinado,1,5º andar,2025-08-20T15:18:01.609885-03:00
+1,Andar Destinado,1,4º andar,2025-08-20T15:18:30.088249-03:00
+1,Andar Destinado,1,5º andar,2025-08-20T15:18:37.237038-03:00
+6,Andar Destinado,1,4º andar,2025-08-20T15:18:46.161408-03:00
+24,Andar Destinado,1,4º andar,2025-08-20T15:19:02.632501-03:00
+30,Andar Destinado,1,4,2025-08-20T15:19:11.724623-03:00
+17,Andar Destinado,1,4,2025-08-21T09:28:44.277454-03:00
+23,Andar Destinado,1,5º andar,2025-08-21T09:28:53.564858-03:00
+24,Andar Destinado,2,5º andar,2025-08-21T09:29:03.684885-03:00
+1,Andar Destinado,1,4,2025-08-21T09:29:26.151065-03:00
+1,Andar Destinado,1,5º andar,2025-08-21T09:29:35.124852-03:00
+6,Andar Destinado,1,4º andar,2025-08-21T09:29:47.345981-03:00
+26,Andar Destinado,1,4,2025-08-21T09:34:08.608227-03:00
+24,Andar Destinado,1,4º andar,2025-08-21T09:34:39.735411-03:00
+37,Andar Destinado,1,4,2025-08-21T09:35:16.200423-03:00
+24,Andar Destinado,2,5º andar,2025-08-22T08:48:47.986500-03:00
+1,Andar Destinado,1,5º andar,2025-08-22T08:49:03.430086-03:00
+1,Andar Destinado,1,4º andar,2025-08-22T08:49:08.357331-03:00
+6,Andar Destinado,1,5º andar,2025-08-22T08:49:16.678630-03:00
+6,Andar Destinado,1,4º andar,2025-08-22T08:49:48.825104-03:00
+22,Andar Destinado,1,5º andar,2025-08-22T08:49:58.613196-03:00
+34,Andar Destinado,1,5º andar,2025-08-22T08:50:35.066938-03:00
+27,Andar Destinado,1,4,2025-08-22T08:57:14.494612-03:00
+23,Andar Destinado,3,4º andar,2025-08-22T08:57:31.241026-03:00
