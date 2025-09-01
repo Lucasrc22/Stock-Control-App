@@ -184,6 +184,12 @@ def update_product(
         write_movimentacoes(movimentacoes)
 
     return products[index]
+@router.get("/movimentacoes", response_model=List[Movimentacao])
+def list_all_movimentacoes():
+    """
+    Retorna todas as movimentações de todos os produtos.
+    """
+    return read_movimentacoes()
 
 
 @router.post("/products/retirada")

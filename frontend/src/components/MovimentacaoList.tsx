@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle, FaFileExcel } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 interface Movimentacao {
   id_produto: number;
@@ -11,9 +13,10 @@ interface Movimentacao {
 
 interface Props {
   productId: number;
+  productName: string; // para nome do arquivo Excel
 }
 
-export default function MovimentacaoList({ productId }: Props) {
+export default function MovimentacaoList({ productId, productName }: Props) {
   const [movs, setMovs] = useState<Movimentacao[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +38,18 @@ export default function MovimentacaoList({ productId }: Props) {
       .finally(() => setLoading(false));
   }, [open, productId]);
 
+  // Função para exportar Excel
+  const exportMovsToExcel = () => {
+    if (movs.length === 0) return;
+
+    const worksheet = XLSX.utils.json_to_sheet(movs);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Movimentações");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, `${productName || "produto"}_movimentacoes.xlsx`);
+  };
+
   return (
     <div style={{ position: "relative", display: "inline-block", marginBottom: 8 }}>
       <button
@@ -52,16 +67,13 @@ export default function MovimentacaoList({ productId }: Props) {
         }}
       >
         <FaExclamationCircle
-          size={28} // ajuste conforme desejar (ex: 32, 36)
+          size={28}
           color="orange"
-          style={{
-            transition: "transform 0.2s ease",
-          }}
+          style={{ transition: "transform 0.2s ease" }}
           onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
       </button>
-
 
       {open && (
         <div
@@ -95,6 +107,26 @@ export default function MovimentacaoList({ productId }: Props) {
               </li>
             ))}
           </ul>
+
+          {movs.length > 0 && (
+            <button
+              onClick={exportMovsToExcel}
+              style={{
+                marginTop: "0.5rem",
+                padding: "0.3rem 0.5rem",
+                backgroundColor: "#107c10",
+                color: "white",
+                border: "none",
+                borderRadius: "0.3rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem",
+              }}
+            >
+              <FaFileExcel /> Exportar Excel
+            </button>
+          )}
         </div>
       )}
     </div>
