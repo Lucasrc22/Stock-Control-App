@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { FaExclamationCircle, FaFileExcel } from "react-icons/fa";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { FaExclamationCircle, FaFileExcel } from 'react-icons/fa';
+import { exportMovimentacoesExcel } from '../utils/exportExcel'; // ajuste o caminho
 
 interface Movimentacao {
   id_produto: number;
@@ -13,10 +12,9 @@ interface Movimentacao {
 
 interface Props {
   productId: number;
-  productName: string; // para nome do arquivo Excel
 }
 
-export default function MovimentacaoList({ productId, productName }: Props) {
+export default function MovimentacaoList({ productId }: Props) {
   const [movs, setMovs] = useState<Movimentacao[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,16 +36,12 @@ export default function MovimentacaoList({ productId, productName }: Props) {
       .finally(() => setLoading(false));
   }, [open, productId]);
 
-  // Função para exportar Excel
-  const exportMovsToExcel = () => {
-    if (movs.length === 0) return;
-
-    const worksheet = XLSX.utils.json_to_sheet(movs);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Movimentações");
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(data, `${productName || "produto"}_movimentacoes.xlsx`);
+  const handleExportProduct = async () => {
+    try {
+      await exportMovimentacoesExcel(movs, `Movimentacoes_Produto_${productId}.xlsx`);
+    } catch (err: any) {
+      alert("Erro ao exportar: " + err.message);
+    }
   };
 
   return (
@@ -108,14 +102,15 @@ export default function MovimentacaoList({ productId, productName }: Props) {
             ))}
           </ul>
 
+          {/* Botão para exportar movimentações deste produto */}
           {movs.length > 0 && (
             <button
-              onClick={exportMovsToExcel}
+              onClick={handleExportProduct}
               style={{
                 marginTop: "0.5rem",
                 padding: "0.3rem 0.5rem",
-                backgroundColor: "#107c10",
-                color: "white",
+                backgroundColor: "#007bff",
+                color: "#fff",
                 border: "none",
                 borderRadius: "0.3rem",
                 cursor: "pointer",
@@ -124,7 +119,7 @@ export default function MovimentacaoList({ productId, productName }: Props) {
                 gap: "0.3rem",
               }}
             >
-              <FaFileExcel /> Exportar Excel
+              <FaFileExcel /> Exportar deste produto
             </button>
           )}
         </div>

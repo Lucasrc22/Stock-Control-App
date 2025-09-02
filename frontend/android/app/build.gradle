@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "stockcontrol.app"
+    namespace "com.stockcontrol"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "stockcontrol.app"
+        applicationId "com.stockcontrol"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

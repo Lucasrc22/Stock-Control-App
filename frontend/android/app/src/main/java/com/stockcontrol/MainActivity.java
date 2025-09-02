@@ -1,4 +1,4 @@
-package stockcontrol.app;
+package com.stockcontrol;
 
 import com.getcapacitor.BridgeActivity;
 
