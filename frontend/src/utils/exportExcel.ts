@@ -1,50 +1,49 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Capacitor } from "@capacitor/core";
 
-/**
- * Exporta movimentações para Excel.
- * Suporta tablet (nativo) via Capacitor e fallback para web.
- */
 export async function exportMovimentacoesExcel(movs: any[], filename: string) {
   if (!movs || movs.length === 0) {
     alert("Nenhuma movimentação para exportar.");
     return;
   }
 
-  if (!filename.endsWith(".xlsx")) filename += ".xlsx";
-
   const worksheet = XLSX.utils.json_to_sheet(movs);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Movimentações");
 
-  // Converte para base64
-  const excelBase64 = XLSX.write(workbook, { bookType: "xlsx", type: "base64" });
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const platform = Capacitor.getPlatform();
+  const isNative = platform === "android" || platform === "ios";
 
-  try {
-    // **Não precisa definir encoding**
-    const result = await Filesystem.writeFile({
-      path: filename,
-      data: excelBase64,
-      directory: Directory.Documents,
-      // encoding: "base64" // <- REMOVIDO
-    });
-
-    console.log("Arquivo salvo em:", result.uri);
-    alert(`Arquivo salvo em: ${result.uri}`);
-  } catch (err) {
-    console.warn("Erro ao salvar nativo, usando fallback web", err);
-
-    // fallback web
+  if (isNative) {
     try {
-      const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-      const blob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      const base64Data = XLSX.write(workbook, { bookType: "xlsx", type: "base64" });
+
+      const result = await Filesystem.writeFile({
+        path: filename,
+        data: base64Data,
+        directory: Directory.Documents,
       });
-      saveAs(blob, filename);
-    } catch (webErr) {
-      console.error("Erro ao salvar arquivo no navegador", webErr);
-      alert("Não foi possível exportar o arquivo.");
+
+      alert(`📂 Arquivo salvo no tablet: ${result.uri}`);
+      console.log("Arquivo salvo em:", result.uri);
+    } catch (err) {
+      console.error("❌ Erro ao salvar no tablet:", err);
+      fallbackWeb(excelBuffer, filename);
     }
+  } else {
+    fallbackWeb(excelBuffer, filename);
+  }
+}
+
+function fallbackWeb(excelBuffer: any, filename: string) {
+  try {
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, filename);
+  } catch (err) {
+    console.error("❌ Erro ao salvar no navegador:", err);
+    alert("Não foi possível exportar o arquivo.");
   }
 }
