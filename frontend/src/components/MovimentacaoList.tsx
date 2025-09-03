@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { FaExclamationCircle, FaFileExcel } from 'react-icons/fa';
-import { exportMovimentacoesExcel } from '../utils/exportExcel'; // ajuste o caminho
+import { FaExclamationCircle, FaFileCsv } from "react-icons/fa"; // troquei Excel por CSV
+import { exportMovimentacoesCSV } from "../utils/exportCSV"; // ajuste o caminho
 
 interface Movimentacao {
   id_produto: number;
@@ -38,7 +38,10 @@ export default function MovimentacaoList({ productId }: Props) {
 
   const handleExportProduct = async () => {
     try {
-      await exportMovimentacoesExcel(movs, `Movimentacoes_Produto_${productId}.xlsx`);
+      await exportMovimentacoesCSV(
+        movs,
+        `Movimentacoes_Produto_${productId}.csv` // agora CSV
+      );
     } catch (err: any) {
       alert("Erro ao exportar: " + err.message);
     }
@@ -109,7 +112,7 @@ export default function MovimentacaoList({ productId }: Props) {
               style={{
                 marginTop: "0.5rem",
                 padding: "0.3rem 0.5rem",
-                backgroundColor: "#007bff",
+                backgroundColor: "#28a745",
                 color: "#fff",
                 border: "none",
                 borderRadius: "0.3rem",
@@ -119,7 +122,7 @@ export default function MovimentacaoList({ productId }: Props) {
                 gap: "0.3rem",
               }}
             >
-              <FaFileExcel /> Exportar deste produto
+              <FaFileCsv /> Exportar CSV
             </button>
           )}
         </div>

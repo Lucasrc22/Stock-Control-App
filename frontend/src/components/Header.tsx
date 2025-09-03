@@ -1,5 +1,5 @@
 import '../styles/Header.css';
-import { exportMovimentacoesExcel } from '../utils/exportExcel'; // ajuste o caminho
+import { exportMovimentacoesCSV } from '../utils/exportCSV'; // ajuste o caminho
 import { FaFileExcel } from 'react-icons/fa';
 
 export default function Header() {
@@ -8,7 +8,7 @@ export default function Header() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/movimentacoes`);
       if (!res.ok) throw new Error("Erro ao carregar movimentações");
       const data = await res.json();
-      await exportMovimentacoesExcel(data, "Todas_Movimentacoes.xlsx");
+      await exportMovimentacoesCSV(data, "Todas_Movimentacoes.csv");
     } catch (err: any) {
       alert("Erro ao exportar: " + err.message);
     }
