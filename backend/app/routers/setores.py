@@ -6,17 +6,14 @@ import threading
 import os
 
 router = APIRouter()
-
-CSV_FILE = "app/data/setor_destinado.csv"
 lock = threading.Lock()
 
+CSV_FILE = "app/data/setor_destinado.csv"
 
-# ==============================
-# MODELOS
-# ==============================
 class Setor(BaseModel):
-    item: str
+    id: int = 0
     total: int = 0
+    item: str
     financeiro: int = 0
     fiscal: int = 0
     ti: int = 0
@@ -26,168 +23,82 @@ class Setor(BaseModel):
     suprimentos: int = 0
     juridico: int = 0
 
-
 class SetorResponse(Setor):
-    id: int
+    pass  # já está igual ao Setor
 
-
-# ==============================
-# FUNÇÕES AUXILIARES
-# ==============================
-def read_setores_from_csv() -> List[SetorResponse]:
+# ---------- FUNÇÕES AUXILIARES ---------- #
+def read_setor_from_csv() -> List[SetorResponse]:
     setores = []
     if not os.path.exists(CSV_FILE):
-        return setores
+        return []
 
     with open(CSV_FILE, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
-        for i, row in enumerate(reader, start=1):
+        for row in reader:
             setores.append(SetorResponse(
-                id=i,
-                item=row.get("item", ""),
-                total=int(row.get("total", 0)),
-                financeiro=int(row.get("financeiro", 0)),
-                fiscal=int(row.get("fiscal", 0)),
-                ti=int(row.get("ti", 0)),
-                comercial=int(row.get("comercial", 0)),
-                rh=int(row.get("rh", 0)),
-                dp=int(row.get("dp", 0)),
-                suprimentos=int(row.get("suprimentos", 0)),
-                juridico=int(row.get("juridico", 0))
+                id=int(row["id"]),
+                total=int(row["total"]),
+                item=row["item"],
+                financeiro=int(row["financeiro"]),
+                fiscal=int(row["fiscal"]),
+                ti=int(row["ti"]),
+                comercial=int(row["comercial"]),
+                rh=int(row["rh"]),
+                dp=int(row["dp"]),
+                suprimentos=int(row["suprimentos"]),
+                juridico=int(row["juridico"])
             ))
     return setores
 
-
 def write_setores_to_csv(setores: List[SetorResponse]):
     with lock:
-        os.makedirs(os.path.dirname(CSV_FILE), exist_ok=True)
         with open(CSV_FILE, "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = [
-                "item", "total", "financeiro", "fiscal", "ti", "comercial",
-                "rh", "dp", "suprimentos", "juridico"
-            ]
+            fieldnames = ["id","total","item","financeiro","fiscal","ti",
+                          "comercial","rh","dp","suprimentos","juridico"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            for setor in setores:
+            for s in setores:
                 writer.writerow({
-                    "item": setor.item,
-                    "total": setor.total,
-                    "financeiro": setor.financeiro,
-                    "fiscal": setor.fiscal,
-                    "ti": setor.ti,
-                    "comercial": setor.comercial,
-                    "rh": setor.rh,
-                    "dp": setor.dp,
-                    "suprimentos": setor.suprimentos,
-                    "juridico": setor.juridico
+                    "id": s.id,
+                    "total": s.total,
+                    "item": s.item,
+                    "financeiro": s.financeiro,
+                    "fiscal": s.fiscal,
+                    "ti": s.ti,
+                    "comercial": s.comercial,
+                    "rh": s.rh,
+                    "dp": s.dp,
+                    "suprimentos": s.suprimentos,
+                    "juridico": s.juridico
                 })
 
-
-# ==============================
-# ROTAS
-# ==============================
+# ---------- ENDPOINTS ---------- #
 @router.get("/setores", response_model=List[SetorResponse])
 def listar_setores():
-    """Lista todos os produtos/setores"""
-    return read_setores_from_csv()
-
+    """Retorna a lista completa de setores e seus quantitativos."""
+    return read_setor_from_csv()
 
 @router.post("/setores", response_model=SetorResponse)
-def criar_setor(setor: Setor):
-    """Adiciona um novo item de controle por setor"""
-    setores = read_setores_from_csv()
-    new_id = max([p.id for p in setores], default=0) + 1
-    new_setor = SetorResponse(id=new_id, **setor.dict())
-    setores.append(new_setor)
+def adicionar_setor(novo: Setor):
+    """Adiciona um novo item/setor no CSV."""
+    setores = read_setor_from_csv()
+    new_id = max([s.id for s in setores], default=0) + 1
+    novo.id = new_id
+    # opcional: calcular total automaticamente
+    novo.total = novo.financeiro + novo.fiscal + novo.ti + novo.comercial + novo.rh + novo.dp + novo.suprimentos + novo.juridico
+    setores.append(novo)
     write_setores_to_csv(setores)
-    return new_setor
+    return novo
 
-
-@router.put("/setores/{setor_id}")
-def atualizar_setor(
-    setor_id: int,
-    updates: dict = Body(...)
-):
-    """Atualiza um setor específico"""
-    setores = read_setores_from_csv()
-    setor = next((s for s in setores if s.id == setor_id), None)
-    if not setor:
-        raise HTTPException(status_code=404, detail="Setor não encontrado")
-
-    for key, value in updates.items():
-        if hasattr(setor, key):
-            setattr(setor, key, value)
-
-    # Recalcular total
-    setor.total = (
-        setor.financeiro
-        + setor.fiscal
-        + setor.ti
-        + setor.comercial
-        + setor.rh
-        + setor.dp
-        + setor.suprimentos
-        + setor.juridico
-    )
-
+@router.put("/setores/{setor_id}", response_model=SetorResponse)
+def atualizar_setor(setor_id: int, dados: Setor):
+    """Atualiza as quantidades de um setor existente."""
+    setores = read_setor_from_csv()
     for i, s in enumerate(setores):
         if s.id == setor_id:
-            setores[i] = setor
-            break
-
-    write_setores_to_csv(setores)
-    return {"message": "Setor atualizado com sucesso", "setor": setor}
-
-
-@router.delete("/setores/{setor_id}")
-def deletar_setor(setor_id: int):
-    """Remove um item da lista de setores"""
-    setores = read_setores_from_csv()
-    updated = [s for s in setores if s.id != setor_id]
-
-    if len(updated) == len(setores):
-        raise HTTPException(status_code=404, detail="Setor não encontrado")
-
-    write_setores_to_csv(updated)
-    return {"message": "Setor removido com sucesso"}
-
-
-# ==============================
-# ROTA EXTRA (AJUSTE DE QUANTIDADES)
-# ==============================
-@router.post("/setores/movimentar")
-def movimentar_setor(
-    setor_id: int = Body(...),
-    quantidade: int = Body(...),
-    destino: str = Body(..., description="Nome do setor a ajustar (ex: 'financeiro', 'ti')"),
-    tipo: str = Body("entrada")  # entrada ou saida
-):
-    """Movimenta itens entre setores ou faz entrada/saída"""
-    setores = read_setores_from_csv()
-    setor = next((s for s in setores if s.id == setor_id), None)
-    if not setor:
-        raise HTTPException(status_code=404, detail="Setor não encontrado")
-
-    if not hasattr(setor, destino):
-        raise HTTPException(status_code=400, detail=f"Setor '{destino}' inválido")
-
-    atual = getattr(setor, destino)
-
-    if tipo == "entrada":
-        setattr(setor, destino, atual + quantidade)
-        setor.total += quantidade
-    elif tipo == "saida":
-        if atual < quantidade:
-            raise HTTPException(status_code=400, detail=f"Estoque insuficiente em {destino}")
-        setattr(setor, destino, atual - quantidade)
-        setor.total -= quantidade
-    else:
-        raise HTTPException(status_code=400, detail="Tipo deve ser 'entrada' ou 'saida'")
-
-    for i, s in enumerate(setores):
-        if s.id == setor_id:
-            setores[i] = setor
-            break
-
-    write_setores_to_csv(setores)
-    return {"message": "Movimentação realizada com sucesso", "setor": setor}
+            # atualiza os dados e recalcula total
+            dados.total = dados.financeiro + dados.fiscal + dados.ti + dados.comercial + dados.rh + dados.dp + dados.suprimentos + dados.juridico
+            setores[i] = dados
+            write_setores_to_csv(setores)
+            return dados
+    raise HTTPException(status_code=404, detail="Setor não encontrado")

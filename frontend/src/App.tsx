@@ -1,17 +1,16 @@
-import './styles/global.css';
-import './styles/variables.css';
-import './styles/components.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import ProductList from "./components/ProductList";
+import SetorList from "./components/SetorList";
 
-import Header from './components/Header';
-import HomePage from './pages/HomePage';
-
-function App() {
+export default function App() {
   return (
-    <>
+    <Router>
       <Header />
-      <HomePage />
-    </>
+      <Routes>
+        <Route path="/" element={<ProductList />} />
+        <Route path="/setores" element={<SetorList />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;

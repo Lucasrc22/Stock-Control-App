@@ -1,0 +1,42 @@
+/* Estilização personalizada para a tabela */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+thead th {
+  background-color: #E6F1FA;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Animação customizada para o spinner */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 1.2s linear infinite;
+}
+
+/* Responsividade adicional */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+}
