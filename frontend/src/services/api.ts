@@ -64,6 +64,7 @@ export const productService = {
 export interface Setor {
   id: number;
   item: string;
+  
   total: number;
   financeiro: number;
   fiscal: number;
@@ -81,7 +82,8 @@ export const setorService = {
     return response.data;
   },
 
-  updateSetor: async (id: number, setor: Omit<Setor, 'id'>): Promise<Setor> => {
+  updateSetor: async (id: number, setor: Setor): Promise<Setor> => {
+
     const response = await api.put(`/setores/${id}`, setor);
     return response.data;
   },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { setorService, Setor } from '../services/api';
 import EditableSetorRow from './EditableSetorRow';
-import '../styles/ProductList.css'; // reaproveitando estilo
+import '../styles/SetorList.css'; // reaproveitando estilo
 
 export default function SetorList() {
   const [setores, setSetores] = useState<Setor[]>([]);
@@ -47,12 +47,11 @@ export default function SetorList() {
     );
   }
 
-  const totalGeral = setores.reduce((sum, s) => sum + s.total, 0);
 
   return (
-    <div className="container mx-auto px-4 py-6 flex justify-center">
-      <div className="overflow-x-auto rounded-xl shadow-md">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+    <div className="setor-container">
+      <div className="setor-scroll">
+        <table className="setor-table">
           <thead className="bg-[#E6F1FA] text-gray-700 font-semibold">
             <tr>
               <th className="py-3 px-4 border">ID</th>
@@ -77,10 +76,7 @@ export default function SetorList() {
                 onChange={handleSetorChange}
               />
             ))}
-            <tr className="font-bold bg-gray-100 text-center">
-              <td className="py-2 px-4 border" colSpan={2}>Total Geral</td>
-              <td className="py-2 px-4 border">{totalGeral}</td>
-            </tr>
+
           </tbody>
         </table>
       </div>

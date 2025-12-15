@@ -1,42 +1,106 @@
-/* Estilização personalizada para a tabela */
-table {
-  border-collapse: separate;
-  border-spacing: 0;
+/* ===== CONTAINER GERAL ===== */
+.setor-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ===== TABELA ===== */
+.setor-table {
+  min-width: 100%;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   overflow: hidden;
-  border-radius: 0.75rem;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-thead th {
-  background-color: #E6F1FA;
-  font-weight: 600;
+/* ===== CABEÇALHO ===== */
+.setor-table thead tr {
+  background: #e6f1fa;
   color: #374151;
+  font-weight: 600;
 }
 
-/* Animação customizada para o spinner */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.setor-table th {
+  padding: 12px 16px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  white-space: nowrap;
 }
 
-.animate-spin-slow {
-  animation: spin-slow 1.2s linear infinite;
+/* ===== LINHAS DA TABELA ===== */
+.setor-table td {
+  padding: 10px 14px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
 }
 
-/* Responsividade adicional */
-@media (max-width: 640px) {
-  .container {
-    padding: 1rem;
-  }
+/* Zebra */
+.setor-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
 
-  table {
-    font-size: 0.85rem;
-  }
+/* Hover */
+.setor-table tbody tr:hover {
+  background: #f1faff;
+  transition: 0.2s ease;
+}
 
-  th, td {
-    padding: 0.5rem;
-  }
+/* ===== CÉLULAS EDITÁVEIS ===== */
+.setor-input {
+  width: 70px;
+  padding: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.setor-input:focus {
+  outline: 2px solid #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* ===== BOTÕES ===== */
+.setor-btn {
+  padding: 6px 12px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.setor-btn:hover {
+  background: #2563eb;
+}
+
+/* Botão deletar */
+.setor-btn-delete {
+  background: #ef4444;
+}
+
+.setor-btn-delete:hover {
+  background: #dc2626;
+}
+
+/* ===== TOTAL GERAL ===== */
+.total-geral-row {
+  background: #f3f4f6;
+  font-weight: bold;
+}
+
+.total-geral-row td {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  text-align: center;
+}
+
+/* ===== SCROLL MOBILE ===== */
+.setor-scroll {
+  overflow-x: auto;
+  border-radius: 12px;
 }

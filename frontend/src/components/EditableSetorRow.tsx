@@ -1,29 +1,38 @@
-import { useState, useEffect } from 'react';
-import { Setor } from '../types'; // defina o tipo Setor igual ao backend
-import { setorService } from '../services/api'; // criar funções de API para atualizar setor
-import '../styles/EditableProductRow.css';
+import { useEffect, useState } from 'react';
+import { Setor, setorService } from '../services/api';
 
 interface Props {
   setor: Setor;
-  onChange: (updatedSetor: Setor) => void;
+  onChange: (updated: Setor) => void;
 }
 
 export default function EditableSetorRow({ setor, onChange }: Props) {
+  // Estado local espelhando o backend (NADA de cálculo)
+  const [form, setForm] = useState<Setor>(setor);
   const [loading, setLoading] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
-  const [localSetor, setLocalSetor] = useState<Setor>({ ...setor });
+  const [editing, setEditing] = useState(false);
 
+  // Sempre que o setor mudar externamente, sincroniza
   useEffect(() => {
-    setLocalSetor({ ...setor });
-    setShowEdit(false);
+    setForm(setor);
   }, [setor]);
 
-  async function handleUpdateSetor() {
+  function handleChange(
+    field: keyof Setor,
+    value: string | number
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      [field]: Number(value),
+    }));
+  }
+
+  async function handleSave() {
     setLoading(true);
     try {
-      const updated = await setorService.updateSetor(localSetor.id, localSetor);
+      const updated = await setorService.updateSetor(form.id, form);
       onChange(updated);
-      setShowEdit(false);
+      setEditing(false);
     } catch (err) {
       alert('Erro ao atualizar setor');
       console.error(err);
@@ -32,63 +41,131 @@ export default function EditableSetorRow({ setor, onChange }: Props) {
     }
   }
 
-  function handleChange(field: keyof Setor, value: number) {
-    setLocalSetor(prev => ({ ...prev, [field]: value }));
+  function handleCancel() {
+    setForm(setor);
+    setEditing(false);
   }
 
   return (
-    <tr className="transition hover:bg-blue-50 border-b-2 border-gray-200 text-center">
-      <td className="py-2 px-4">{setor.id}</td>
-      <td className="py-2 px-4 font-medium">{setor.item}</td>
-      <td className="py-2 px-4">{setor.total}</td>
-      <td className="py-2 px-4">{setor.financeiro}</td>
-      <td className="py-2 px-4">{setor.fiscal}</td>
-      <td className="py-2 px-4">{setor.ti}</td>
-      <td className="py-2 px-4">{setor.comercial}</td>
-      <td className="py-2 px-4">{setor.rh}</td>
-      <td className="py-2 px-4">{setor.dp}</td>
-      <td className="py-2 px-4">{setor.suprimentos}</td>
-      <td className="py-2 px-4">{setor.juridico}</td>
-      <td className="py-2 px-4 space-y-2">
-        {!showEdit && (
+    <tr className="hover:bg-blue-50 border-b">
+      <td className="border px-2">{setor.id}</td>
+      <td className="border px-2">{setor.item}</td>
+
+      {/* TOTAL (campo normal, independente) */}
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.total}
+          disabled={!editing}
+          onChange={(e) => handleChange('total', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.financeiro}
+          disabled={!editing}
+          onChange={(e) => handleChange('financeiro', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.fiscal}
+          disabled={!editing}
+          onChange={(e) => handleChange('fiscal', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.ti}
+          disabled={!editing}
+          onChange={(e) => handleChange('ti', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.comercial}
+          disabled={!editing}
+          onChange={(e) => handleChange('comercial', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.rh}
+          disabled={!editing}
+          onChange={(e) => handleChange('rh', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.dp}
+          disabled={!editing}
+          onChange={(e) => handleChange('dp', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.suprimentos}
+          disabled={!editing}
+          onChange={(e) => handleChange('suprimentos', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2">
+        <input
+          type="number"
+          value={form.juridico}
+          disabled={!editing}
+          onChange={(e) => handleChange('juridico', e.target.value)}
+          className="input-quantidade"
+        />
+      </td>
+
+      <td className="border px-2 space-x-2">
+        {!editing ? (
           <button
-            onClick={() => setShowEdit(true)}
+            onClick={() => setEditing(true)}
             className="button-action bg-blue-600 text-white"
           >
             Editar
           </button>
-        )}
-        {showEdit && (
-          <div className="space-y-2">
-            <div className="grid grid-cols-5 gap-2">
-              {(['financeiro','fiscal','ti','comercial','rh','dp','suprimentos','juridico'] as (keyof Setor)[]).map(field => (
-                <input
-                  key={field}
-                  type="number"
-                  min={0}
-                  value={localSetor[field]}
-                  onChange={e => handleChange(field, Number(e.target.value))}
-                  className="input-quantidade"
-                  placeholder={field}
-                />
-              ))}
-            </div>
-            <div className="flex space-x-2 mt-2">
-              <button
-                onClick={handleUpdateSetor}
-                disabled={loading}
-                className="button-action bg-green-600 text-white"
-              >
-                Confirmar
-              </button>
-              <button
-                onClick={() => setShowEdit(false)}
-                className="button-action bg-red-600 text-white"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
+        ) : (
+          <>
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className="button-action bg-green-600 text-white"
+            >
+              Salvar
+            </button>
+            <button
+              onClick={handleCancel}
+              className="button-action bg-red-600 text-white"
+            >
+              Cancelar
+            </button>
+          </>
         )}
       </td>
     </tr>
