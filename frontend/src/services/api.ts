@@ -64,7 +64,7 @@ export const productService = {
 export interface Setor {
   id: number;
   item: string;
-  
+
   total: number;
   financeiro: number;
   fiscal: number;
@@ -76,19 +76,39 @@ export interface Setor {
   juridico: number;
 }
 
+/**
+ * DTO para CREATE e UPDATE
+ * (não envia id no body)
+ */
+export type SetorPayload = Omit<Setor, 'id'>;
+
+// ---------- SETOR SERVICE ---------- //
+
 export const setorService = {
   getAll: async (): Promise<Setor[]> => {
     const response = await api.get('/setores');
     return response.data;
   },
 
-  updateSetor: async (id: number, setor: Setor): Promise<Setor> => {
-
+  /**
+   * Atualiza um setor existente
+   * id vai na URL
+   * payload SEM id
+   */
+  updateSetor: async (
+    id: number,
+    setor: SetorPayload
+  ): Promise<Setor> => {
     const response = await api.put(`/setores/${id}`, setor);
     return response.data;
   },
 
-  createSetor: async (setor: Omit<Setor, 'id'>): Promise<Setor> => {
+  /**
+   * Cria um novo setor
+   */
+  createSetor: async (
+    setor: SetorPayload
+  ): Promise<Setor> => {
     const response = await api.post('/setores', setor);
     return response.data;
   },

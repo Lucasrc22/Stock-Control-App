@@ -1,171 +1,173 @@
 import { useEffect, useState } from 'react';
 import { Setor, setorService } from '../services/api';
+import '../styles/EditableProductRow.css';
 
 interface Props {
   setor: Setor;
-  onChange: (updated: Setor) => void;
+  onChange: (updatedSetor: Setor) => void;
 }
 
-export default function EditableSetorRow({ setor, onChange }: Props) {
-  // Estado local espelhando o backend (NADA de cálculo)
-  const [form, setForm] = useState<Setor>(setor);
-  const [loading, setLoading] = useState(false);
-  const [editing, setEditing] = useState(false);
+/**
+ * Campos numéricos que representam estoques por setor
+ */
+type CampoSetor =
+  | 'financeiro'
+  | 'fiscal'
+  | 'ti'
+  | 'comercial'
+  | 'rh'
+  | 'dp'
+  | 'suprimentos'
+  | 'juridico';
 
-  // Sempre que o setor mudar externamente, sincroniza
+/**
+ * Campos realmente editáveis na tela
+ * (nunca incluir id ou item aqui)
+ */
+type CampoEditavel = 'total' | CampoSetor;
+
+/**
+ * Lista exata de inputs exibidos no modo edição
+ */
+const CAMPOS_EDITAVEIS: CampoEditavel[] = [
+  'total',
+  'financeiro',
+  'fiscal',
+  'ti',
+  'comercial',
+  'rh',
+  'dp',
+  'suprimentos',
+  'juridico'
+];
+
+export default function EditableSetorRow({ setor, onChange }: Props) {
+  const [localSetor, setLocalSetor] = useState<Setor>({ ...setor });
+  const [showEdit, setShowEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  /**
+   * Sempre que o setor mudar externamente,
+   * sincroniza o estado local
+   */
   useEffect(() => {
-    setForm(setor);
+    setLocalSetor({ ...setor });
+    setShowEdit(false);
   }, [setor]);
 
-  function handleChange(
-    field: keyof Setor,
-    value: string | number
-  ) {
-    setForm((prev) => ({
-      ...prev,
-      [field]: Number(value),
-    }));
+  /**
+   * Atualiza campos editáveis
+   * - Se for total → altera direto
+   * - Se for setor → ajusta o total automaticamente
+   */
+  function handleChange(field: CampoEditavel, value: number) {
+    setLocalSetor(prev => {
+      if (field === 'total') {
+        return { ...prev, total: value };
+      }
+
+      const diferenca = value - prev[field];
+
+      return {
+        ...prev,
+        [field]: value,
+        total: prev.total - diferenca
+      };
+    });
   }
 
-  async function handleSave() {
+  /**
+   * Envia atualização para o backend
+   */
+  async function handleUpdateSetor() {
     setLoading(true);
     try {
-      const updated = await setorService.updateSetor(form.id, form);
+      const updated = await setorService.updateSetor(setor.id, {
+        item: localSetor.item,
+        total: localSetor.total,
+        financeiro: localSetor.financeiro,
+        fiscal: localSetor.fiscal,
+        ti: localSetor.ti,
+        comercial: localSetor.comercial,
+        rh: localSetor.rh,
+        dp: localSetor.dp,
+        suprimentos: localSetor.suprimentos,
+        juridico: localSetor.juridico
+      });
+
       onChange(updated);
-      setEditing(false);
+      setShowEdit(false);
     } catch (err) {
-      alert('Erro ao atualizar setor');
       console.error(err);
+      alert('Erro ao atualizar setor');
     } finally {
       setLoading(false);
     }
   }
 
-  function handleCancel() {
-    setForm(setor);
-    setEditing(false);
-  }
-
   return (
-    <tr className="hover:bg-blue-50 border-b">
-      <td className="border px-2">{setor.id}</td>
-      <td className="border px-2">{setor.item}</td>
+    <tr className="transition hover:bg-blue-50 border-b-2 border-gray-200 text-center">
+      <td className="py-2 px-4">{setor.id}</td>
+      <td className="py-2 px-4 font-medium">{setor.item}</td>
 
-      {/* TOTAL (campo normal, independente) */}
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.total}
-          disabled={!editing}
-          onChange={(e) => handleChange('total', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
+      <td className="py-2 px-4">{localSetor.total}</td>
+      <td className="py-2 px-4">{localSetor.financeiro}</td>
+      <td className="py-2 px-4">{localSetor.fiscal}</td>
+      <td className="py-2 px-4">{localSetor.ti}</td>
+      <td className="py-2 px-4">{localSetor.comercial}</td>
+      <td className="py-2 px-4">{localSetor.rh}</td>
+      <td className="py-2 px-4">{localSetor.dp}</td>
+      <td className="py-2 px-4">{localSetor.suprimentos}</td>
+      <td className="py-2 px-4">{localSetor.juridico}</td>
 
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.financeiro}
-          disabled={!editing}
-          onChange={(e) => handleChange('financeiro', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.fiscal}
-          disabled={!editing}
-          onChange={(e) => handleChange('fiscal', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.ti}
-          disabled={!editing}
-          onChange={(e) => handleChange('ti', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.comercial}
-          disabled={!editing}
-          onChange={(e) => handleChange('comercial', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.rh}
-          disabled={!editing}
-          onChange={(e) => handleChange('rh', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.dp}
-          disabled={!editing}
-          onChange={(e) => handleChange('dp', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.suprimentos}
-          disabled={!editing}
-          onChange={(e) => handleChange('suprimentos', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2">
-        <input
-          type="number"
-          value={form.juridico}
-          disabled={!editing}
-          onChange={(e) => handleChange('juridico', e.target.value)}
-          className="input-quantidade"
-        />
-      </td>
-
-      <td className="border px-2 space-x-2">
-        {!editing ? (
+      <td className="py-2 px-4 space-y-2">
+        {!showEdit && (
           <button
-            onClick={() => setEditing(true)}
+            onClick={() => setShowEdit(true)}
             className="button-action bg-blue-600 text-white"
           >
             Editar
           </button>
-        ) : (
-          <>
-            <button
-              onClick={handleSave}
-              disabled={loading}
-              className="button-action bg-green-600 text-white"
-            >
-              Salvar
-            </button>
-            <button
-              onClick={handleCancel}
-              className="button-action bg-red-600 text-white"
-            >
-              Cancelar
-            </button>
-          </>
+        )}
+
+        {showEdit && (
+          <div className="space-y-2">
+            <div className="grid grid-cols-5 gap-2">
+              {CAMPOS_EDITAVEIS.map(field => (
+                <input
+                  key={field}
+                  type="number"
+                  min={0}
+                  value={localSetor[field]}
+                  onChange={e =>
+                    handleChange(field, Number(e.target.value))
+                  }
+                  className="input-quantidade"
+                  placeholder={field}
+                />
+              ))}
+            </div>
+
+            <div className="flex space-x-2">
+              <button
+                onClick={handleUpdateSetor}
+                disabled={loading}
+                className="button-action bg-green-600 text-white"
+              >
+                Confirmar
+              </button>
+
+              <button
+                onClick={() => {
+                  setLocalSetor({ ...setor });
+                  setShowEdit(false);
+                }}
+                className="button-action bg-red-600 text-white"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         )}
       </td>
     </tr>
