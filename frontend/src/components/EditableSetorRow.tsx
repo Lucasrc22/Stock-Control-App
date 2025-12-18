@@ -66,15 +66,16 @@ export default function EditableSetorRow({ setor, onChange }: Props) {
         return { ...prev, total: value };
       }
 
-      const diferenca = value - prev[field];
+      const removido = prev[field] - value;
 
       return {
         ...prev,
         [field]: value,
-        total: prev.total - diferenca
+        total: removido < 0 ? prev.total + removido : prev.total
       };
     });
   }
+
 
   /**
    * Envia atualização para o backend

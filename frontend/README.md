@@ -41,6 +41,22 @@ Create a production build:
 ```bash
 npm run build
 ```
+!!!!!!!!!!!!!##Update App, dentro da pasta frontend!!!!!!!!!!!!!
+
+-1)
+npm install
+npm run build
+
+-2)
+npx cap sync android
+
+-3)
+npx cap open android
+
+-4) no Android Studio
+
+Build → Clean Project
+Build → Rebuild Project
 
 ## Deployment
 
