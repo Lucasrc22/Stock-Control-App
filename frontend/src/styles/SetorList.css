@@ -4,6 +4,27 @@
   justify-content: center;
   padding: 24px;
 }
+.historico-container {
+  position: fixed;
+  top: 240px;
+  left: 0;              /* 👈 forces right side */
+  left: auto;            /* 👈 IMPORTANT: cancels left rules */
+
+  width: 380px;
+  height: calc(100vh - 160px);
+
+  background: #ffffff;
+  padding: 16px;
+
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.12);
+  border-left: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+
 
 /* ===== TABELA ===== */
 .setor-table {

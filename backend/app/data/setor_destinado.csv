@@ -1,2 +1,2 @@
-id,total,item,financeiro,fiscal,ti,comercial,rh,dp,suprimentos,juridico
-1,0,Papel A4,0,0,0,0,0,0,0,0
+id,item,total,financeiro,fiscal,ti,comercial,rh,dp,suprimentos,juridico
+1,Papel A4,23,3,1,0,0,0,0,0,0

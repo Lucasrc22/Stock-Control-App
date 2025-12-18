@@ -600,3 +600,27 @@ id_produto,tipo,quantidade,andar,timestamp
 6,Andar Destinado,1,4º andar,2025-10-22T09:21:24.870215-03:00
 1,Andar Destinado,1,4º andar,2025-10-22T09:21:37.479172-03:00
 30,Andar Destinado,1,4,2025-10-22T10:07:27.938174-03:00
+1,Andar Destinado,1,4,2025-12-12T16:46:25.204520-03:00
+1,Andar Destinado,1,5º andar,2025-12-12T16:46:30.000926-03:00
+2,Andar Destinado,1,5º andar,2025-12-12T16:46:37.073087-03:00
+10,Andar Destinado,1,5º andar,2025-12-12T16:46:45.753275-03:00
+23,Andar Destinado,2,5º andar,2025-12-12T16:47:14.760071-03:00
+23,Andar Destinado,1,4º andar,2025-12-12T16:47:24.271405-03:00
+24,Andar Destinado,2,5º andar,2025-12-12T16:47:57.231420-03:00
+30,Andar Destinado,1,4,2025-12-12T16:48:09.946665-03:00
+30,Andar Destinado,1,5º andar,2025-12-12T16:48:15.681840-03:00
+21,Andar Destinado,1,5º andar,2025-12-12T16:48:53.299496-03:00
+22,Andar Destinado,1,5º andar,2025-12-12T16:49:03.892166-03:00
+1,Andar Destinado,1,4,2025-12-15T08:20:15.834490-03:00
+23,Andar Destinado,2,5º andar,2025-12-15T08:20:53.128109-03:00
+24,Andar Destinado,2,5º andar,2025-12-15T08:20:58.895798-03:00
+31,Andar Destinado,1,4,2025-12-15T08:21:07.396518-03:00
+31,Andar Destinado,1,5º andar,2025-12-15T08:21:13.166429-03:00
+46,Andar Destinado,2,5º andar,2025-12-15T08:21:28.914961-03:00
+46,adicao_estoque_atual,4,geral,2025-12-15T08:21:42.070935-03:00
+24,Andar Destinado,1,4º andar,2025-12-15T08:23:47.176323-03:00
+1,Andar Destinado,1,4,2025-12-16T08:53:43.384476-03:00
+1,Andar Destinado,1,5º andar,2025-12-16T08:53:48.511962-03:00
+3,adicao_estoque_atual,3,geral,2025-12-16T08:54:10.671313-03:00
+3,Andar Destinado,1,5º andar,2025-12-16T08:54:24.370125-03:00
+4,adicao_estoque_atual,3,geral,2025-12-16T08:54:37.766489-03:00

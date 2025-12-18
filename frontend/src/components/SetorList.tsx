@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { setorService, Setor } from '../services/api';
+import { setorService, Setor } from '../services/setorService';
 import EditableSetorRow from './EditableSetorRow';
+import SetorHistoricoList from './SetorHistoricoList';
 import '../styles/SetorList.css';
 
 export default function SetorList() {
@@ -40,6 +41,7 @@ export default function SetorList() {
 
   return (
     <div className="setor-container">
+      {/* 🔹 LISTA DE SETORES */}
       <div className="setor-scroll">
         <table className="setor-table">
           <thead>
@@ -58,6 +60,7 @@ export default function SetorList() {
               <th>Ações</th>
             </tr>
           </thead>
+
           <tbody>
             {setores.map(setor => (
               <EditableSetorRow
@@ -69,6 +72,11 @@ export default function SetorList() {
           </tbody>
         </table>
       </div>
+
+      <div className="historico-container">
+        <SetorHistoricoList />
+      </div>
+
     </div>
   );
 }
