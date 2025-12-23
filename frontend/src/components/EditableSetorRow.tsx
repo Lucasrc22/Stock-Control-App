@@ -66,12 +66,12 @@ export default function EditableSetorRow({ setor, onChange }: Props) {
         return { ...prev, total: value };
       }
 
-      const removido = prev[field] - value;
+      const delta = prev[field] - value;
 
       return {
         ...prev,
         [field]: value,
-        total: removido < 0 ? prev.total + removido : prev.total
+        total: delta < 0 ? prev.total + delta : prev.total
       };
     });
   }
@@ -80,6 +80,29 @@ export default function EditableSetorRow({ setor, onChange }: Props) {
   /**
    * Envia atualização para o backend
    */
+  /**
+   * Ajusta o valor atual em +1 / -1 (min 0) e delega para handleChange
+   */
+  function changeBy(field: CampoEditavel, delta: number) {
+    setLocalSetor(prev => {
+      const current = (prev as any)[field] ?? 0;
+      const next = Math.max(0, Number(current) + delta);
+
+      // Se for 'total', apenas atualiza total; caso contrário ajusta setor e total
+      if (field === 'total') {
+        return { ...prev, total: next } as Setor;
+      }
+
+      const d = (prev as any)[field] - next;
+
+      return {
+        ...prev,
+        [field]: next,
+        total: d < 0 ? prev.total + d : prev.total
+      } as Setor;
+    });
+  }
+
   async function handleUpdateSetor() {
     setLoading(true);
     try {
@@ -135,17 +158,34 @@ export default function EditableSetorRow({ setor, onChange }: Props) {
           <div className="space-y-2">
             <div className="grid grid-cols-5 gap-2">
               {CAMPOS_EDITAVEIS.map(field => (
-                <input
-                  key={field}
-                  type="number"
-                  min={0}
-                  value={localSetor[field]}
-                  onChange={e =>
-                    handleChange(field, Number(e.target.value))
-                  }
-                  className="input-quantidade"
-                  placeholder={field}
-                />
+                <div key={field} className="input-stepper">
+                  <button
+                    type="button"
+                    onClick={() => changeBy(field, -1)}
+                    className="step-btn"
+                    aria-label={`Diminuir ${field}`}
+                  >
+                    −
+                  </button>
+
+                  <input
+                    type="number"
+                    min={0}
+                    value={localSetor[field] as any}
+                    onChange={e => handleChange(field, Number(e.target.value))}
+                    className="input-quantidade"
+                    placeholder={field}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => changeBy(field, 1)}
+                    className="step-btn"
+                    aria-label={`Aumentar ${field}`}
+                  >
+                    +
+                  </button>
+                </div>
               ))}
             </div>
 

@@ -100,3 +100,40 @@ input[type=number]::-webkit-outer-spin-button {
 .bloco-produto:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* Stepper controls for numeric inputs */
+.input-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.step-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  background: white;
+  cursor: pointer;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.step-btn:active {
+  transform: translateY(1px);
+}
+
+.input-stepper .input-quantidade {
+  width: 64px;
+  text-align: center;
+  margin: 0 4px;
+}
+
+/* Make sure native number spinners don't conflict with custom buttons */
+input[type=number] {
+  -moz-appearance: textfield;
+}
