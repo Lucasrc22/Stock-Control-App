@@ -6,7 +6,7 @@ import threading
 from datetime import datetime
 import pytz
 
-from backend.app.services.email_service import enviar_email_alerta
+from app.services.email_service import enviar_email_alerta
 
 router = APIRouter()
 
