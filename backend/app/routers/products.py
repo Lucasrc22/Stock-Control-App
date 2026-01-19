@@ -123,7 +123,7 @@ def write_movimentacoes(movs: List[Movimentacao]):
 # =========================
 
 def verificar_e_enviar_alerta(produto: ProductResponse):
-    destinatarios = ["lucas.ribeiro@grupogalactus.com.br"]
+    destinatarios = ["lucas.ribeiro@grupogalactus.com.br", "danilo.pontes@grupogalactus.com.br"]
 
     def alerta(condicao, flag, local):
         if condicao and not flag:

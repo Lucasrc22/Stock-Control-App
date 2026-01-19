@@ -1,13 +1,13 @@
 id,nome,estoque_atual,estoque_4andar,estoque_5andar,email_alerta_geral,email_alerta_4andar,email_alerta_5andar
 1,CAFE EM PO 250GR MELITA EXTRAFORTE,25,50,60,False,False,False
-2,CAFE SOLUVEL MELITA,0,1,3,True,False,False
-3,ACUCAR KG (PETRIBU NÃO),0,9,4,True,False,False
-4,ADOÇANTE,0,3,5,True,False,False
-5,MEL,0,0,2,False,False,False
-6,LEITE EM PO INSTANTÂNEO 200G,0,9,7,False,False,False
-7,GUARDANAPO,0,3,3,True,False,False
-8,FILME PVC,0,0,0,False,False,False
-9,CAFE CAPUCCINO 3 corações CLASSICO 200g,0,0,1,False,False,False
+2,CAFE SOLUVEL MELITA,0,0,3,True,True,False
+3,ACUCAR KG (PETRIBU NÃO),0,13,4,True,False,False
+4,ADOÇANTE,6,3,5,False,False,False
+5,MEL,6,0,2,False,False,False
+6,LEITE EM PO INSTANTÂNEO 200G,4,9,7,False,False,False
+7,GUARDANAPO,5,3,3,False,False,False
+8,FILME PVC,5,0,0,False,False,False
+9,CAFE CAPUCCINO 3 corações CLASSICO 200g,6,0,1,False,False,False
 10,Capuccino 3 corações caramello salgado,2,0,3,False,False,False
 11,CHÁ DE BOLDO,0,2,4,False,False,False
 12,CHA DE CAMOMILA,0,0,0,False,False,False

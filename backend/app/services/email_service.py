@@ -15,13 +15,13 @@ Olá,
 
 O estoque do produto abaixo foi zerado.
 
-Produto: {produto}
-Local: {local}
-Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+📦Produto: {produto}
+📍Local: {local}
+⌚Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
 Por favor, providencie a reposição.
 
-— Sistema de Controle de Estoque
+Stock Control App
 """)
 
     try:
