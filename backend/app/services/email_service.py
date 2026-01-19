@@ -25,10 +25,14 @@ Por favor, providencie a reposição.
 """)
 
     try:
-        with smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT) as server:
+        with smtplib.SMTP("smtp.office365.com", 587) as server:
+            server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(settings.EMAIL_USER, settings.EMAIL_PASSWORD)
             server.send_message(msg)
 
+        print("E-mail enviado com sucesso!")
+
     except Exception as e:
-        print(f"[ERRO EMAIL] {e}")
+        print("Erro ao enviar e-mail:", e)

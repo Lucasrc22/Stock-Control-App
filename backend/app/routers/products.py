@@ -171,6 +171,26 @@ def list_products():
     return read_products_from_csv()
 
 
+@router.put("/products/{product_id}", response_model=ProductResponse)
+def update_product(product_id: int = Path(...), product: ProductBase = Body(...)):
+    products = read_products_from_csv()
+    
+    produto = next((p for p in products if p.id == product_id), None)
+    if not produto:
+        raise HTTPException(404, "Produto não encontrado")
+    
+    produto.nome = product.nome
+    produto.estoque_atual = product.estoque_atual
+    produto.estoque_4andar = product.estoque_4andar
+    produto.estoque_5andar = product.estoque_5andar
+    produto.email_alerta_geral = product.email_alerta_geral
+    produto.email_alerta_4andar = product.email_alerta_4andar
+    produto.email_alerta_5andar = product.email_alerta_5andar
+    
+    write_products_to_csv(products)
+    return produto
+
+
 @router.post("/products/entrada")
 def adicionar_estoque(id: int = Body(...), quantidade: int = Body(...)):
     products = read_products_from_csv()
