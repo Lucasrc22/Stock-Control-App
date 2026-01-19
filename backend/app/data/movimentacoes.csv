@@ -624,3 +624,10 @@ id_produto,tipo,quantidade,andar,timestamp
 3,adicao_estoque_atual,3,geral,2025-12-16T08:54:10.671313-03:00
 3,Andar Destinado,1,5º andar,2025-12-16T08:54:24.370125-03:00
 4,adicao_estoque_atual,3,geral,2025-12-16T08:54:37.766489-03:00
+1,adicao_estoque_atual,1,geral,2026-01-16T12:23:50.470285-03:00
+1,adicao_estoque_atual,1,geral,2026-01-16T12:23:58.021530-03:00
+1,Andar Destinado,1,4,2026-01-16T12:24:01.940021-03:00
+1,consumo,1,4,2026-01-16T12:24:10.450957-03:00
+1,consumo,1,4,2026-01-16T12:24:14.801109-03:00
+2,retirada,1,4,2026-01-16T18:17:30.995265-03:00
+2,consumo,4,5,2026-01-16T18:17:39.569476-03:00

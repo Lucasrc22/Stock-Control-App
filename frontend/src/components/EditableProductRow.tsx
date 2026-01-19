@@ -14,14 +14,15 @@ export default function EditableProductRow({ product, onChange }: Props) {
   const [quantidadeConsumo, setQuantidadeConsumo] = useState(0);
   const [andarRetirada, setAndarRetirada] = useState('4');
   const [andarConsumo, setAndarConsumo] = useState('4');
+
   const [showWithdrawal, setShowWithdrawal] = useState(false);
   const [showConsumo, setShowConsumo] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [addEstoque, setAddEstoque] = useState(0);
   const [showAddEstoque, setShowAddEstoque] = useState(false);
 
-  // 👉 NOVO: edição de nome
+  const [addEstoque, setAddEstoque] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // edição de nome
   const [editNome, setEditNome] = useState(false);
   const [nomeEditavel, setNomeEditavel] = useState(product.nome);
 
@@ -31,6 +32,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
     setAddEstoque(0);
     setShowWithdrawal(false);
     setShowConsumo(false);
+    setShowAddEstoque(false);
     setEditNome(false);
     setNomeEditavel(product.nome);
   }, [product]);
@@ -59,7 +61,10 @@ export default function EditableProductRow({ product, onChange }: Props) {
   }
 
   async function handleAdicionarEstoque() {
-    if (addEstoque <= 0) return alert('Informe uma quantidade válida');
+    if (addEstoque <= 0 || loading) {
+      return alert('Informe uma quantidade válida');
+    }
+
     setLoading(true);
     try {
       const updated = await productService.updateProduct(product.id, {
@@ -68,6 +73,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
         estoque_4andar: product.estoque_4andar ?? 0,
         estoque_5andar: product.estoque_5andar ?? 0,
       });
+
       onChange(updated);
       setAddEstoque(0);
       setShowAddEstoque(false);
@@ -79,7 +85,10 @@ export default function EditableProductRow({ product, onChange }: Props) {
   }
 
   async function handleRegisterWithdrawal() {
-    if (quantidadeRetirada <= 0) return alert('Quantidade inválida');
+    if (quantidadeRetirada <= 0 || loading) {
+      return alert('Quantidade inválida');
+    }
+
     setLoading(true);
     try {
       const response = await productService.registerWithdrawal({
@@ -87,6 +96,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
         quantidade: quantidadeRetirada,
         andar: andarRetirada,
       });
+
       onChange(response.produto);
       setShowWithdrawal(false);
     } catch {
@@ -97,7 +107,10 @@ export default function EditableProductRow({ product, onChange }: Props) {
   }
 
   async function handleRegisterConsumo() {
-    if (quantidadeConsumo <= 0) return alert('Quantidade inválida');
+    if (quantidadeConsumo <= 0 || loading) {
+      return alert('Quantidade inválida');
+    }
+
     setLoading(true);
     try {
       const response = await productService.consumirProduto({
@@ -105,6 +118,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
         quantidade: quantidadeConsumo,
         andar: andarConsumo,
       });
+
       onChange(response.produto);
       setShowConsumo(false);
     } catch {
@@ -118,7 +132,7 @@ export default function EditableProductRow({ product, onChange }: Props) {
     <tr className="transition hover:bg-blue-50 border-b-2 border-gray-200">
       <td>{product.id}</td>
 
-      {/* 👉 NOME EDITÁVEL */}
+      {/* nome */}
       <td>
         {!editNome ? (
           <div className="flex items-center space-x-2">
@@ -162,22 +176,65 @@ export default function EditableProductRow({ product, onChange }: Props) {
       <td>{product.estoque_4andar}</td>
       <td>{product.estoque_5andar}</td>
 
+      {/* ações */}
       <td>
         <MovimentacaoList productId={product.id} />
 
+        {/* adicionar estoque geral */}
+        {!showAddEstoque && (
+          <button
+            onClick={() => setShowAddEstoque(true)}
+            className="button-action bg-green-500 text-white mt-2"
+          >
+          Adicionar Estoque
+          </button>
+        )}
+
+        {showAddEstoque && (
+          <div className="flex items-center space-x-2 mt-2">
+            <input
+              type="number"
+              value={addEstoque}
+              onChange={e => setAddEstoque(Number(e.target.value))}
+              className="input-quantidade"
+              placeholder="Qtd"
+            />
+            <button
+              onClick={handleAdicionarEstoque}
+              disabled={loading}
+              className="button-action bg-green-600 text-white"
+            >
+              ✔
+            </button>
+            <button
+              onClick={() => {
+                setShowAddEstoque(false);
+                setAddEstoque(0);
+              }}
+              className="button-action bg-red-600 text-white"
+            >
+              ✖
+            </button>
+          </div>
+        )}
+
         {/* retirada */}
         {!showWithdrawal && (
-          <button onClick={() => setShowWithdrawal(true)}>
+          <button
+            onClick={() => setShowWithdrawal(true)}
+            className="button-action bg-yellow-500 text-white mt-2"
+          >
             Andar Destinado
           </button>
         )}
 
         {showWithdrawal && (
-          <>
+          <div className="flex items-center space-x-2 mt-2">
             <input
               type="number"
               value={quantidadeRetirada}
               onChange={e => setQuantidadeRetirada(Number(e.target.value))}
+              className="input-quantidade"
             />
             <select
               value={andarRetirada}
@@ -186,23 +243,32 @@ export default function EditableProductRow({ product, onChange }: Props) {
               <option value="4">4º andar</option>
               <option value="5">5º andar</option>
             </select>
-            <button onClick={handleRegisterWithdrawal}>Confirmar</button>
-          </>
+            <button
+              onClick={handleRegisterWithdrawal}
+              className="button-action bg-green-600 text-white"
+            >
+              ✔
+            </button>
+          </div>
         )}
 
         {/* consumo */}
         {!showConsumo && (
-          <button onClick={() => setShowConsumo(true)}>
+          <button
+            onClick={() => setShowConsumo(true)}
+            className="button-action bg-red-500 text-white mt-2"
+          >
             Registrar Consumo
           </button>
         )}
 
         {showConsumo && (
-          <>
+          <div className="flex items-center space-x-2 mt-2">
             <input
               type="number"
               value={quantidadeConsumo}
               onChange={e => setQuantidadeConsumo(Number(e.target.value))}
+              className="input-quantidade"
             />
             <select
               value={andarConsumo}
@@ -211,8 +277,13 @@ export default function EditableProductRow({ product, onChange }: Props) {
               <option value="4">4º andar</option>
               <option value="5">5º andar</option>
             </select>
-            <button onClick={handleRegisterConsumo}>Confirmar</button>
-          </>
+            <button
+              onClick={handleRegisterConsumo}
+              className="button-action bg-green-600 text-white"
+            >
+              ✔
+            </button>
+          </div>
         )}
       </td>
     </tr>
