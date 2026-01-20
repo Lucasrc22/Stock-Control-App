@@ -1,11 +1,11 @@
 id,nome,estoque_atual,estoque_4andar,estoque_5andar,limite_alerta_geral,email_alerta_geral,email_alerta_4andar,email_alerta_5andar
-1,CAFE EM PO 250GR MELITA EXTRAFORTE,5,70,60,0,False,False,False
-2,CAFE SOLUVEL MELITA,1,15,3,0,False,False,False
-3,ACUCAR KG (PETRIBU NÃO),0,13,6,0,True,False,False
-4,ADOÇANTE,0,9,5,0,True,False,False
-5,MEL,0,6,0,0,True,False,True
-6,LEITE EM PO INSTANTÂNEO 200G,0,13,7,0,True,False,False
-7,GUARDANAPO,0,3,8,0,True,False,False
+1,CAFE EM PO 250GR MELITA EXTRAFORTE,12,70,65,0,False,False,False
+2,CAFE SOLUVEL MELITA,12,16,3,0,False,False,False
+3,ACUCAR KG (PETRIBU NÃO),11,13,6,0,False,False,False
+4,ADOÇANTE,12,9,5,0,False,False,False
+5,MEL,6,6,0,0,False,False,False
+6,LEITE EM PO INSTANTÂNEO 200G,9,13,7,0,False,False,False
+7,GUARDANAPO,9,3,8,0,False,False,False
 8,FILME PVC,5,0,0,0,False,False,False
 9,CAFE CAPUCCINO 3 corações CLASSICO 200g,6,0,1,0,False,False,False
 10,Capuccino 3 corações caramello salgado,2,0,3,0,False,False,False

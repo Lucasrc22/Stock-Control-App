@@ -68,7 +68,7 @@ def read_products_from_csv() -> List[ProductResponse]:
                     estoque_atual=int(row["estoque_atual"]),
                     estoque_4andar=int(row["estoque_4andar"]),
                     estoque_5andar=int(row["estoque_5andar"]),
-                    limite_alerta_geral=int(row.get("limite_alerta_geral", 0)),
+                    limite_alerta_geral=int(row["limite_alerta_geral"]),
                     email_alerta_geral=row["email_alerta_geral"] == "True",
                     email_alerta_4andar=row["email_alerta_4andar"] == "True",
                     email_alerta_5andar=row["email_alerta_5andar"] == "True",
@@ -83,8 +83,7 @@ def write_products_to_csv(products: List[ProductResponse]):
         with open(CSV_FILE, "w", newline="", encoding="utf-8") as csvfile:
             fieldnames = [
                 "id", "nome",
-                "estoque_atual", "estoque_4andar", "estoque_5andar",
-                "limite_alerta_geral",
+                "estoque_atual", "estoque_4andar", "estoque_5andar","limite_alerta_geral",
                 "email_alerta_geral", "email_alerta_4andar", "email_alerta_5andar"
             ]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -128,8 +127,7 @@ def write_movimentacoes(movs: List[Movimentacao]):
 def verificar_e_enviar_alerta(produto: ProductResponse):
     destinatarios = ["lucas.ribeiro@grupogalactus.com.br", "danilo.pontes@grupogalactus.com.br"]
 
-    def alerta(estoque_atual, limite, flag, local):
-        condicao = estoque_atual <= limite and limite > 0
+    def alerta(condicao, flag, local):
         if condicao and not flag:
             enviar_email_alerta(destinatarios, produto.nome, local)
             return True
@@ -138,22 +136,19 @@ def verificar_e_enviar_alerta(produto: ProductResponse):
         return flag
 
     produto.email_alerta_geral = alerta(
-        produto.estoque_atual,
-        produto.limite_alerta_geral,
+        produto.estoque_atual == 0,
         produto.email_alerta_geral,
         "Estoque Geral"
     )
 
     produto.email_alerta_4andar = alerta(
-        produto.estoque_4andar,
-        0,  # No limit for floors
+        produto.estoque_4andar == 0,
         produto.email_alerta_4andar,
         "4º Andar"
     )
 
     produto.email_alerta_5andar = alerta(
-        produto.estoque_5andar,
-        0,  # No limit for floors
+        produto.estoque_5andar == 0,
         produto.email_alerta_5andar,
         "5º Andar"
     )
