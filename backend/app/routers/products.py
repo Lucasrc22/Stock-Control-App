@@ -24,14 +24,13 @@ tz = pytz.timezone("America/Sao_Paulo")
 # =========================
 
 class ProductBase(BaseModel):
+    id: int = None
     nome: str
     estoque_atual: int = 0
     estoque_4andar: int = 0
     estoque_5andar: int = 0
     limite_alerta_geral: int = 0
     email_alerta_geral: bool = False
-    email_alerta_4andar: bool = False
-    email_alerta_5andar: bool = False
 
 
 class ProductResponse(ProductBase):
@@ -60,7 +59,7 @@ def read_products_from_csv() -> List[ProductResponse]:
     products = []
     try:
         with open(CSV_FILE, newline="", encoding="utf-8") as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile, delimiter=";")
             for row in reader:
                 products.append(ProductResponse(
                     id=int(row["id"]),
@@ -70,8 +69,6 @@ def read_products_from_csv() -> List[ProductResponse]:
                     estoque_5andar=int(row["estoque_5andar"]),
                     limite_alerta_geral=int(row["limite_alerta_geral"]),
                     email_alerta_geral=row["email_alerta_geral"] == "True",
-                    email_alerta_4andar=row["email_alerta_4andar"] == "True",
-                    email_alerta_5andar=row["email_alerta_5andar"] == "True",
                 ))
     except FileNotFoundError:
         pass
@@ -84,9 +81,9 @@ def write_products_to_csv(products: List[ProductResponse]):
             fieldnames = [
                 "id", "nome",
                 "estoque_atual", "estoque_4andar", "estoque_5andar","limite_alerta_geral",
-                "email_alerta_geral", "email_alerta_4andar", "email_alerta_5andar"
+                "email_alerta_geral"
             ]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=";")
             writer.writeheader()
             for p in products:
                 writer.writerow(p.dict())
@@ -125,33 +122,11 @@ def write_movimentacoes(movs: List[Movimentacao]):
 # =========================
 
 def verificar_e_enviar_alerta(produto: ProductResponse):
-    destinatarios = ["lucas.ribeiro@grupogalactus.com.br", "danilo.pontes@grupogalactus.com.br"]
+    destinatarios = ["lucas.ribeiro@grupogalactus.com.br","amanda.bezerra@grupogalactus.com.br", "maria.luiza@grupogalactus.com.br"]
 
-    def alerta(condicao, flag, local):
-        if condicao and not flag:
-            enviar_email_alerta(destinatarios, produto.nome, local)
-            return True
-        if not condicao:
-            return False
-        return flag
-
-    produto.email_alerta_geral = alerta(
-        produto.estoque_atual == 0,
-        produto.email_alerta_geral,
-        "Estoque Geral"
-    )
-
-    produto.email_alerta_4andar = alerta(
-        produto.estoque_4andar == 0,
-        produto.email_alerta_4andar,
-        "4º Andar"
-    )
-
-    produto.email_alerta_5andar = alerta(
-        produto.estoque_5andar == 0,
-        produto.email_alerta_5andar,
-        "5º Andar"
-    )
+    # Apenas verifica se o estoque está no limite e envia alerta
+    if produto.estoque_atual <= produto.limite_alerta_geral:
+        enviar_email_alerta(destinatarios, produto.nome, "Estoque Geral",produto.estoque_atual)
 
 
 # =========================
@@ -187,8 +162,6 @@ def update_product(product_id: int = Path(...), product: ProductBase = Body(...)
     produto.estoque_5andar = product.estoque_5andar
     produto.limite_alerta_geral = product.limite_alerta_geral
     produto.email_alerta_geral = product.email_alerta_geral
-    produto.email_alerta_4andar = product.email_alerta_4andar
-    produto.email_alerta_5andar = product.email_alerta_5andar
     
     write_products_to_csv(products)
     return produto

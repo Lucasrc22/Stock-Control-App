@@ -4,7 +4,7 @@ from datetime import datetime
 from app.core.config import settings
 
 
-def enviar_email_alerta(destinatarios: list[str], produto: str, local: str):
+def enviar_email_alerta(destinatarios: list[str], produto: str, local: str, estoque: int):
     msg = EmailMessage()
     msg["Subject"] = f"⚠️ Alerta de Estoque Acabando - {produto}"
     msg["From"] = settings.EMAIL_FROM
@@ -19,6 +19,7 @@ O estoque do produto está perto de acabar.
 
 📦 Produto: {produto}
 📍 Local: {local}
+📉 Estoque Atual: {estoque}
 ⌚ Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
 Por favor, providencie a reposição.
