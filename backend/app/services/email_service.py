@@ -6,18 +6,20 @@ from app.core.config import settings
 
 def enviar_email_alerta(destinatarios: list[str], produto: str, local: str):
     msg = EmailMessage()
-    msg["Subject"] = f"⚠️ Alerta de Estoque Zerado - {produto}"
+    msg["Subject"] = f"⚠️ Alerta de Estoque Acabando - {produto}"
     msg["From"] = settings.EMAIL_FROM
     msg["To"] = ", ".join(destinatarios)
 
     msg.set_content(f"""
+                    
+!!!!!!!!!!!!!!!TESTE!!!!!!!!!!!!!
 Olá,
 
-O estoque do produto abaixo foi zerado.
+O estoque do produto está perto de acabar.
 
-📦Produto: {produto}
-📍Local: {local}
-⌚Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+📦 Produto: {produto}
+📍 Local: {local}
+⌚ Data/Hora: {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
 Por favor, providencie a reposição.
 
