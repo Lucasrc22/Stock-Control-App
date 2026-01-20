@@ -1,8 +1,8 @@
 id,nome,estoque_atual,estoque_4andar,estoque_5andar,limite_alerta_geral,email_alerta_geral,email_alerta_4andar,email_alerta_5andar
-1,CAFE EM PO 250GR MELITA EXTRAFORTE,12,70,65,0,False,False,False
-2,CAFE SOLUVEL MELITA,12,16,3,0,False,False,False
+1,CAFE EM PO 250GR MELITA EXTRAFORTE,0,70,77,0,False,False,False
+2,CAFE SOLUVEL MELITA,0,16,15,0,True,False,False
 3,ACUCAR KG (PETRIBU NÃO),11,13,6,0,False,False,False
-4,ADOÇANTE,12,9,5,0,False,False,False
+4,ADOÇANTE,0,9,17,0,False,False,False
 5,MEL,6,6,0,0,False,False,False
 6,LEITE EM PO INSTANTÂNEO 200G,9,13,7,0,False,False,False
 7,GUARDANAPO,9,3,8,0,False,False,False
