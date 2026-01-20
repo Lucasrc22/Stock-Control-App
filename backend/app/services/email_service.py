@@ -25,6 +25,8 @@ O estoque do produto está perto de acabar.
 Por favor, providencie a reposição.
 
 Stock Control App
+
+"Esta é uma mensagem automática. Dúvidas entrar em contato com o setor de TI.🖥️"
 """)
 
     try:

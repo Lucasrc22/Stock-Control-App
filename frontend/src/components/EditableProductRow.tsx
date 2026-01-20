@@ -249,6 +249,15 @@ export default function EditableProductRow({ product, onChange }: Props) {
             >
               ✔
             </button>
+            <button
+              onClick={() => {
+                setShowWithdrawal(false);
+                setQuantidadeRetirada(0);
+              }}
+              className="button-action bg-red-600 text-white"
+            >
+              ✖
+            </button>
           </div>
         )}
 
@@ -282,6 +291,15 @@ export default function EditableProductRow({ product, onChange }: Props) {
               className="button-action bg-green-600 text-white"
             >
               ✔
+            </button>
+            <button
+              onClick={() => {
+                setShowConsumo(false);
+                setQuantidadeConsumo(0);
+              }}
+              className="button-action bg-red-600 text-white"
+            >
+              ✖
             </button>
           </div>
         )}

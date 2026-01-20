@@ -72,7 +72,7 @@ def read_setor_from_csv() -> List[SetorResponse]:
 
 def write_setores_to_csv(setores: List[SetorResponse]):
     with lock:
-        with open(CSV_SETOR, "w", newline="", encoding="utf-8") as csvfile:
+        with open(CSV_SETOR, "w", newline="", encoding="latin-1") as csvfile:
             fieldnames = [
                 "id", "item", "total", "financeiro", "fiscal", "ti",
                 "comercial", "rh", "dp", "suprimentos", "juridico"
@@ -98,7 +98,7 @@ def registrar_historico(
     with lock:
         file_exists = os.path.exists(CSV_HISTORICO)
 
-        with open(CSV_HISTORICO, "a", newline="", encoding="utf-8") as csvfile:
+        with open(CSV_HISTORICO, "a", newline="", encoding="latin-1") as csvfile:
             fieldnames = ["id_produto", "tipo", "quantidade", "setor", "timestamp"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -119,7 +119,7 @@ def read_historico() -> List[Historico]:
         return []
 
     historico = []
-    with open(CSV_HISTORICO, newline="", encoding="utf-8") as csvfile:
+    with open(CSV_HISTORICO, newline="", encoding="latin-1") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             historico.append(Historico(**row))

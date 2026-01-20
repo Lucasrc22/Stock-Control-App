@@ -58,7 +58,7 @@ class Movimentacao(BaseModel):
 def read_products_from_csv() -> List[ProductResponse]:
     products = []
     try:
-        with open(CSV_FILE, newline="", encoding="utf-8") as csvfile:
+        with open(CSV_FILE, newline="", encoding="latin-1") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=";")
             for row in reader:
                 products.append(ProductResponse(
@@ -77,7 +77,7 @@ def read_products_from_csv() -> List[ProductResponse]:
 
 def write_products_to_csv(products: List[ProductResponse]):
     with lock:
-        with open(CSV_FILE, "w", newline="", encoding="utf-8") as csvfile:
+        with open(CSV_FILE, "w", newline="", encoding="latin-1") as csvfile:
             fieldnames = [
                 "id", "nome",
                 "estoque_atual", "estoque_4andar", "estoque_5andar","limite_alerta_geral",
@@ -92,7 +92,7 @@ def write_products_to_csv(products: List[ProductResponse]):
 def read_movimentacoes() -> List[Movimentacao]:
     movs = []
     try:
-        with open(MOV_CSV_FILE, newline="", encoding="utf-8") as csvfile:
+        with open(MOV_CSV_FILE, newline="", encoding="latin-1") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 movs.append(Movimentacao(
@@ -109,7 +109,7 @@ def read_movimentacoes() -> List[Movimentacao]:
 
 def write_movimentacoes(movs: List[Movimentacao]):
     with mov_lock:
-        with open(MOV_CSV_FILE, "w", newline="", encoding="utf-8") as csvfile:
+        with open(MOV_CSV_FILE, "w", newline="", encoding="latin-1") as csvfile:
             fieldnames = ["id_produto", "tipo", "quantidade", "andar", "timestamp"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()

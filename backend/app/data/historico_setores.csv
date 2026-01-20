@@ -1,2 +1,10 @@
 id_produto,tipo,quantidade,setor,timestamp
 
+
+
+1,entrada,1,financeiro,2025-12-29T12:56:00.166078
+1,entrada,2,financeiro,2025-12-30T16:43:53.725171
+1,entrada,1,financeiro,2026-01-05T18:03:30.426123
+1,entrada,11,financeiro,2026-01-09T12:05:16.423275
+1,saida,1,financeiro,2026-01-12T10:58:20.209068
+1,entrada,2,fiscal,2026-01-12T10:58:20.214503
