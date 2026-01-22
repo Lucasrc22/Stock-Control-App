@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, HTTPException, Path, Body
 from pydantic import BaseModel
 from typing import List
@@ -5,9 +6,12 @@ import csv
 import threading
 from datetime import datetime
 import pytz
-
+import os
+from dotenv import load_dotenv
 from app.services.email_service import enviar_email_alerta
 
+
+load_dotenv(override=True)
 router = APIRouter()
 
 CSV_FILE = "app/data/products.csv"
@@ -122,11 +126,12 @@ def write_movimentacoes(movs: List[Movimentacao]):
 # =========================
 
 def verificar_e_enviar_alerta(produto: ProductResponse):
-    destinatarios = ["lucas.ribeiro@grupogalactus.com.br","amanda.bezerra@grupogalactus.com.br", "maria.luiza@grupogalactus.com.br"]
-
+    destinatarios = os.getenv("EMAIL_DESTINO",[])
+    lista_emails = json.loads(destinatarios)
+    
     # Apenas verifica se o estoque está no limite e envia alerta
     if produto.estoque_atual <= produto.limite_alerta_geral:
-        enviar_email_alerta(destinatarios, produto.nome, "Estoque Geral",produto.estoque_atual)
+        enviar_email_alerta(lista_emails, produto.nome, "Estoque Geral",produto.estoque_atual)
 
 
 # =========================
